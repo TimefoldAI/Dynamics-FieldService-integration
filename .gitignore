@@ -1,0 +1,31 @@
+# Local environment. .env holds the Timefold API key; .env.example shows its shape.
+.env
+# The cached Dynamics sign-in (a refresh token).
+.auth/
+
+# Build output: the .NET and Dataverse SDKs (scripts/build_plugin.sh), the compiler.
+.tools/
+bin/
+obj/
+__pycache__/
+*.pyc
+
+# Local tooling, not part of the integration: tests, the mock Dataverse, the
+# local board, the marketing video, and the Python reference code they use.
+local/
+mock-dataverse/
+ui/
+video/
+docker-compose.yml
+scripts/tfd365/api.py
+scripts/tfd365/config.py
+scripts/tfd365/timefold.py
+scripts/tfd365/fsr/
+# Claude Code's local settings for this checkout.
+.claude/
+
+# Editor and OS noise.
+*.log
+.DS_Store
+.idea/
+.vscode/

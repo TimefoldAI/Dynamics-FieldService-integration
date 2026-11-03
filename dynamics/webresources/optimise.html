@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Optimise with Timefold</title>
+<!-- Web resource tf_/optimise.html. Starts a run by creating a
+     tf_optimisationrun row; the Timefold plug-in does the rest inside
+     Dataverse. This page only watches that row. -->
+<style>
+  body{margin:0;padding:16px 20px;font:14px/1.45 "Segoe UI",-apple-system,sans-serif;color:#242424}
+  h2{font-size:16px;margin:0 0 4px} p{margin:0 0 12px;color:#616161;font-size:13px}
+  label{display:block;font-size:12px;font-weight:600;margin:10px 0 4px;color:#424242}
+  input[type=date],input[type=number]{width:100%;box-sizing:border-box;padding:6px 8px;border:1px solid #d1d1d1;border-radius:4px;font:inherit}
+  .row{display:flex;gap:12px}.row>div{flex:1}
+  .check{display:flex;gap:6px;align-items:center;font-weight:400;margin-top:12px}
+  button{margin-top:16px;padding:7px 18px;border-radius:4px;border:1px solid #0f6cbd;background:#0f6cbd;color:#fff;font:600 13px "Segoe UI",sans-serif;cursor:pointer}
+  button.secondary{background:#fff;color:#242424;border-color:#d1d1d1;margin-left:6px}
+  button:disabled{opacity:.5;cursor:default}
+  .stage{display:inline-block;margin-top:14px;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ebf3fc;color:#0c3b5e}
+  .note{font-size:12px;color:#605e5c;margin:8px 0 12px}
+  .stage.ok{background:#dff6dd;color:#0e700e}.stage.bad{background:#fde7e9;color:#a80000}
+  .kpis{display:flex;gap:16px;margin-top:10px;font-size:13px}.kpis b{display:block;font-size:20px;font-weight:300}
+  pre{background:#f7f7f7;border-radius:4px;padding:8px 10px;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap;max-height:230px;overflow:auto;margin-top:10px}
+</style>
+</head>
+<body>
+<h2>Optimise routes with Timefold</h2>
+<p>Plans the day's open work orders across your technicians and books them on the schedule board.</p>
+
+<div id="form">
+  <div class="row">
+    <div><label for="day">Day to plan</label><input type="date" id="day"></div>
+    <div><label for="days">Days</label><input type="number" id="days" min="1" max="7" value="1"></div>
+    <div><label for="secs">Solver time (s)</label><input type="number" id="secs" min="5" max="3600" value="30"></div>
+  </div>
+  <label class="check"><input type="checkbox" id="dry"> Dry run: build the request, don't call Timefold</label>
+  <button id="go">Optimise</button><button class="secondary" id="close">Close</button>
+</div>
+
+<div id="progress" hidden>
+  <span id="stage" class="stage">Queued</span>
+  <div class="kpis"><div><b id="visits">–</b>work orders</div><div><b id="planned">–</b>booked</div>
+    <div><b id="open">–</b>left open</div><div><b id="score" style="font-size:13px;font-weight:600;margin-top:6px">–</b>score</div></div>
+  <pre id="log">Starting…</pre>
+  <p class="note" id="note">You can close this window: the run carries on in Dynamics, and its record
+    under Timefold optimisation runs shows the result.</p>
+  <button id="board" disabled>Open schedule board</button><button class="secondary" id="done">Close</button>
+</div>
+
+<script>
+var Xrm = window.parent.Xrm;
+var STAGES = { 100000000: "Queued", 100000001: "Solving", 100000002: "Writing bookings",
+               100000003: "Completed", 100000004: "Failed", 100000005: "Dry run done" };
+var FINAL = [100000003, 100000004, 100000005];
+var $ = function (id) { return document.getElementById(id); };
+var STEP_EVERY = 15000;     // while open, the dialog also advances the run (as the driver flow does)
+var STALLED = 180000;       // no change on the run for this long: say so
+
+function nextWeekday() {
+  var d = new Date();
+  while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+  return d.toISOString().slice(0, 10);
+}
+$("day").value = nextWeekday();
+
+function close() { window.close(); if (Xrm && Xrm.Navigation) { try { parent.window.close(); } catch (e) {} } }
+$("close").onclick = close;
+$("done").onclick = close;
+$("board").onclick = function () {
+  Xrm.Navigation.navigateTo({ pageType: "entitylist", entityName: "msdyn_scheduleboardsetting" }, { target: 1 });
+};
+
+$("go").onclick = function () {
+  $("go").disabled = true;
+  var day = $("day").value;
+  var run = {
+    tf_name: "Routes " + day,
+    tf_plandate: day,
+    tf_days: parseInt($("days").value, 10) || 1,
+    tf_solverseconds: parseInt($("secs").value, 10) || 30,
+    tf_dryrun: $("dry").checked
+  };
+  Xrm.WebApi.createRecord("tf_optimisationrun", run).then(function (created) {
+    $("form").hidden = true;
+    $("progress").hidden = false;
+    watch(created.id);
+  }, function (e) {
+    $("go").disabled = false;
+    Xrm.Navigation.openErrorDialog({ message: e.message });
+  });
+};
+
+// One step of the run through the tf_ProcessRun custom API: a fresh request each
+// time, so the run is not bound by Dataverse's plug-in limits. The run's lock
+// makes it safe alongside the flow; a busy answer just means someone else is on it.
+function step(id) {
+  var request = {
+    RunId: { guid: id },
+    getMetadata: function () {
+      return { boundParameter: null, operationType: 0, operationName: "tf_ProcessRun",
+               parameterTypes: { RunId: { typeName: "Edm.Guid", structuralProperty: 1 } } };
+    }
+  };
+  Xrm.WebApi.online.execute(request).then(function () {}, function () {});
+}
+
+var lastChange = { text: null, at: Date.now() }, lastStep = 0;
+function watch(id) {
+  Xrm.WebApi.retrieveRecord("tf_optimisationrun", id,
+    "?$select=tf_stage,tf_log,tf_score,tf_visits,tf_scheduled,tf_unscheduled,modifiedon").then(function (r) {
+    var stage = r.tf_stage || 100000000;
+    $("stage").textContent = STAGES[stage] || stage;
+    $("stage").className = "stage" + (stage === 100000003 || stage === 100000005 ? " ok" : stage === 100000004 ? " bad" : "");
+    $("visits").textContent = r.tf_visits != null ? r.tf_visits : "–";
+    $("planned").textContent = r.tf_scheduled != null ? r.tf_scheduled : "–";
+    $("open").textContent = r.tf_unscheduled != null ? r.tf_unscheduled : "–";
+    $("score").textContent = r.tf_score || "–";
+    $("log").textContent = r.tf_log || "Waiting for the Timefold plug-in to start…";
+    $("log").scrollTop = $("log").scrollHeight;
+    if (FINAL.indexOf(stage) >= 0) { $("board").disabled = stage !== 100000003; $("note").hidden = true; return; }
+    if (r.modifiedon !== lastChange.text) lastChange = { text: r.modifiedon, at: Date.now() };
+    if (Date.now() - lastChange.at > STALLED)
+      $("note").textContent = "This run has not moved for " + Math.round((Date.now() - lastChange.at) / 60000) +
+        " minutes. Check that the flow \u201cTimefold: drive optimisation runs\u201d is on in Power Automate.";
+    if (stage !== 100000000 && Date.now() - lastStep > STEP_EVERY) { lastStep = Date.now(); step(id); }
+    setTimeout(function () { watch(id); }, 3000);
+  }, function () { setTimeout(function () { watch(id); }, 5000); });
+}
+</script>
+</body>
+</html>

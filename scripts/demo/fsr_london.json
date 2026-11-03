@@ -1,0 +1,2611 @@
+{
+ "scenario": "fsr-london",
+ "title": "St. Elmore Field Service: three days of biomedical engineering visits in London",
+ "generatedBy": "scripts/demo/generate.py",
+ "marker": "Seeded by the Timefold Dynamics 365 demo",
+ "timeZone": "Europe/London",
+ "dynamicsTimeZoneCode": 85,
+ "days": 3,
+ "rootTerritory": "Timefold Demo London",
+ "territories": [
+  "London North",
+  "London South"
+ ],
+ "ratingModel": {
+  "name": "Timefold demo proficiency",
+  "values": [
+   [
+    "Trainee",
+    1
+   ],
+   [
+    "Skilled",
+    2
+   ],
+   [
+    "Expert",
+    3
+   ]
+  ]
+ },
+ "skills": [
+  "Ventilator Servicing",
+  "Dialysis Systems",
+  "Imaging Calibration",
+  "Electrical Safety Testing",
+  "Infusion Pumps"
+ ],
+ "priorities": [
+  {
+   "name": "Urgent",
+   "level": 9,
+   "color": "D13438"
+  },
+  {
+   "name": "High",
+   "level": 7,
+   "color": "EAA300"
+  },
+  {
+   "name": "Normal",
+   "level": 5,
+   "color": "0078D4"
+  },
+  {
+   "name": "Low",
+   "level": 2,
+   "color": "69797E"
+  }
+ ],
+ "workOrderType": "Timefold demo visit",
+ "incidentTypes": [
+  {
+   "name": "Ventilator annual service",
+   "minutes": 90,
+   "skill": "Ventilator Servicing",
+   "level": 2
+  },
+  {
+   "name": "Dialysis machine repair",
+   "minutes": 120,
+   "skill": "Dialysis Systems",
+   "level": 2
+  },
+  {
+   "name": "Imaging unit calibration",
+   "minutes": 150,
+   "skill": "Imaging Calibration",
+   "level": 3
+  },
+  {
+   "name": "Infusion pump service",
+   "minutes": 45,
+   "skill": "Infusion Pumps",
+   "level": 1
+  },
+  {
+   "name": "Electrical safety check",
+   "minutes": 30,
+   "skill": "Electrical Safety Testing",
+   "level": 1
+  }
+ ],
+ "organizationalUnits": [
+  {
+   "name": "St. Elmore North Depot",
+   "location": [
+    51.554,
+    -0.11
+   ]
+  },
+  {
+   "name": "St. Elmore South Depot",
+   "location": [
+    51.456,
+    -0.118
+   ]
+  }
+ ],
+ "roles": [
+  "Senior Engineer"
+ ],
+ "timeGroups": [
+  {
+   "name": "Two-hour slots",
+   "slots": [
+    [
+     "08:00",
+     "10:00"
+    ],
+    [
+     "10:00",
+     "12:00"
+    ],
+    [
+     "13:00",
+     "15:00"
+    ],
+    [
+     "15:00",
+     "17:00"
+    ]
+   ]
+  }
+ ],
+ "technicians": [
+  {
+   "firstName": "Nadia",
+   "lastName": "Rahimi",
+   "territory": "London North",
+   "home": [
+    51.55866,
+    -0.05665
+   ],
+   "skills": {
+    "Ventilator Servicing": 3,
+    "Electrical Safety Testing": 2,
+    "Infusion Pumps": 2
+   },
+   "workingHours": {
+    "days": [
+     "MO",
+     "TU",
+     "WE",
+     "TH",
+     "FR"
+    ],
+    "start": "08:00",
+    "end": "17:00",
+    "breaks": [
+     [
+      "12:00",
+      "12:30"
+     ]
+    ]
+   },
+   "timeOff": [],
+   "hourlyRate": 48,
+   "orgUnit": "St. Elmore North Depot",
+   "roles": [
+    "Senior Engineer"
+   ],
+   "travelBeforeMinutes": 0,
+   "travelAfterMinutes": 0,
+   "startAt": "home"
+  },
+  {
+   "firstName": "Priyanka",
+   "lastName": "Shah",
+   "territory": "London North",
+   "home": [
+    51.5454,
+    -0.0945
+   ],
+   "skills": {
+    "Imaging Calibration": 3,
+    "Electrical Safety Testing": 2,
+    "Ventilator Servicing": 2
+   },
+   "workingHours": {
+    "days": [
+     "MO",
+     "TU",
+     "WE",
+     "TH",
+     "FR"
+    ],
+    "start": "08:00",
+    "end": "17:00",
+    "breaks": [
+     [
+      "12:00",
+      "12:30"
+     ]
+    ]
+   },
+   "timeOff": [],
+   "hourlyRate": 52,
+   "orgUnit": "St. Elmore North Depot",
+   "roles": [
+    "Senior Engineer"
+   ],
+   "travelBeforeMinutes": 0,
+   "travelAfterMinutes": 0,
+   "startAt": "home"
+  },
+  {
+   "firstName": "Sinead",
+   "lastName": "Walsh",
+   "territory": "London North",
+   "home": [
+    51.52751,
+    -0.16008
+   ],
+   "skills": {
+    "Dialysis Systems": 3,
+    "Infusion Pumps": 2,
+    "Electrical Safety Testing": 1
+   },
+   "workingHours": {
+    "days": [
+     "MO",
+     "TU",
+     "WE",
+     "TH",
+     "FR"
+    ],
+    "start": "08:00",
+    "end": "17:00",
+    "breaks": [
+     [
+      "12:00",
+      "12:30"
+     ]
+    ]
+   },
+   "timeOff": [],
+   "hourlyRate": 44,
+   "orgUnit": "St. Elmore North Depot",
+   "roles": [],
+   "travelBeforeMinutes": 0,
+   "travelAfterMinutes": 0,
+   "startAt": "home"
+  },
+  {
+   "firstName": "Uma",
+   "lastName": "Krishnan",
+   "territory": "London North",
+   "home": [
+    51.57772,
+    -0.14267
+   ],
+   "skills": {
+    "Imaging Calibration": 3,
+    "Dialysis Systems": 2,
+    "Infusion Pumps": 3
+   },
+   "workingHours": {
+    "days": [
+     "MO",
+     "TU",
+     "WE",
+     "TH",
+     "FR"
+    ],
+    "start": "08:00",
+    "end": "17:00",
+    "breaks": [
+     [
+      "12:00",
+      "12:30"
+     ]
+    ]
+   },
+   "timeOff": [],
+   "hourlyRate": 50,
+   "orgUnit": "St. Elmore North Depot",
+   "roles": [],
+   "travelBeforeMinutes": 30,
+   "travelAfterMinutes": 30,
+   "startAt": "orgUnit"
+  },
+  {
+   "firstName": "Owen",
+   "lastName": "Brennan",
+   "territory": "London South",
+   "home": [
+    51.48655,
+    -0.0635
+   ],
+   "skills": {
+    "Dialysis Systems": 3,
+    "Electrical Safety Testing": 2,
+    "Infusion Pumps": 2
+   },
+   "workingHours": {
+    "days": [
+     "MO",
+     "TU",
+     "WE",
+     "TH",
+     "FR"
+    ],
+    "start": "08:00",
+    "end": "17:00",
+    "breaks": [
+     [
+      "12:00",
+      "12:30"
+     ]
+    ]
+   },
+   "timeOff": [],
+   "hourlyRate": 45,
+   "orgUnit": "St. Elmore South Depot",
+   "roles": [],
+   "travelBeforeMinutes": 30,
+   "travelAfterMinutes": 30,
+   "startAt": "orgUnit"
+  },
+  {
+   "firstName": "Rafael",
+   "lastName": "Duarte",
+   "territory": "London South",
+   "home": [
+    51.46418,
+    -0.0655
+   ],
+   "skills": {
+    "Ventilator Servicing": 3,
+    "Imaging Calibration": 3,
+    "Electrical Safety Testing": 2
+   },
+   "workingHours": {
+    "days": [
+     "MO",
+     "TU",
+     "WE",
+     "TH",
+     "FR"
+    ],
+    "start": "08:00",
+    "end": "17:00",
+    "breaks": [
+     [
+      "12:00",
+      "12:30"
+     ]
+    ]
+   },
+   "timeOff": [],
+   "hourlyRate": 55,
+   "orgUnit": "St. Elmore South Depot",
+   "roles": [
+    "Senior Engineer"
+   ],
+   "travelBeforeMinutes": 0,
+   "travelAfterMinutes": 0,
+   "startAt": "home"
+  },
+  {
+   "firstName": "Tobias",
+   "lastName": "Lang",
+   "territory": "London South",
+   "home": [
+    51.4767,
+    -0.0741
+   ],
+   "skills": {
+    "Ventilator Servicing": 2,
+    "Infusion Pumps": 3,
+    "Dialysis Systems": 2
+   },
+   "workingHours": {
+    "days": [
+     "MO",
+     "TU",
+     "WE",
+     "TH",
+     "FR"
+    ],
+    "start": "08:00",
+    "end": "17:00",
+    "breaks": [
+     [
+      "12:00",
+      "12:30"
+     ]
+    ]
+   },
+   "timeOff": [
+    {
+     "day": 1,
+     "reason": "Annual leave"
+    }
+   ],
+   "hourlyRate": 42,
+   "orgUnit": "St. Elmore South Depot",
+   "roles": [],
+   "travelBeforeMinutes": 0,
+   "travelAfterMinutes": 0,
+   "startAt": "home"
+  },
+  {
+   "firstName": "Victor",
+   "lastName": "Osei",
+   "territory": "London South",
+   "home": [
+    51.46289,
+    -0.09561
+   ],
+   "skills": {
+    "Imaging Calibration": 3,
+    "Electrical Safety Testing": 3,
+    "Infusion Pumps": 1
+   },
+   "workingHours": {
+    "days": [
+     "MO",
+     "TU",
+     "WE",
+     "TH",
+     "FR"
+    ],
+    "start": "08:00",
+    "end": "17:00",
+    "breaks": [
+     [
+      "12:00",
+      "12:30"
+     ]
+    ]
+   },
+   "timeOff": [],
+   "hourlyRate": 47,
+   "orgUnit": "St. Elmore South Depot",
+   "roles": [
+    "Senior Engineer"
+   ],
+   "travelBeforeMinutes": 30,
+   "travelAfterMinutes": 30,
+   "startAt": "home"
+  }
+ ],
+ "customers": [
+  {
+   "name": "Ashgrove Clinic",
+   "street": "6 Pinehill Lane",
+   "city": "London",
+   "postalCode": "E18 2SZ",
+   "country": "United Kingdom",
+   "location": [
+    51.60766,
+    -0.07084
+   ]
+  },
+  {
+   "name": "Bellwood Health Centre",
+   "street": "126 Fairoak Terrace",
+   "city": "London",
+   "postalCode": "W12 6WS",
+   "country": "United Kingdom",
+   "location": [
+    51.4051,
+    -0.20729
+   ]
+  },
+  {
+   "name": "Carlton Surgery",
+   "street": "27 Underhill Street",
+   "city": "London",
+   "postalCode": "NW6 3PG",
+   "country": "United Kingdom",
+   "location": [
+    51.53443,
+    -0.12401
+   ]
+  },
+  {
+   "name": "Dunmore Care Home",
+   "street": "10 Redcliffe Road",
+   "city": "London",
+   "postalCode": "SE13 2DY",
+   "country": "United Kingdom",
+   "location": [
+    51.39182,
+    -0.03022
+   ]
+  },
+  {
+   "name": "Elmfield Day Hospital",
+   "street": "159 Marlow Grove",
+   "city": "London",
+   "postalCode": "W15 6LR",
+   "country": "United Kingdom",
+   "location": [
+    51.56616,
+    -0.00674
+   ]
+  },
+  {
+   "name": "Fairoak Practice",
+   "street": "73 Elmfield Terrace",
+   "city": "London",
+   "postalCode": "SE8 4ET",
+   "country": "United Kingdom",
+   "location": [
+    51.4098,
+    0.01618
+   ],
+   "preferredTime": 1
+  },
+  {
+   "name": "Greenway Clinic",
+   "street": "38 Stonebridge Grove",
+   "city": "London",
+   "postalCode": "SE12 8FQ",
+   "country": "United Kingdom",
+   "location": [
+    51.60582,
+    -0.11004
+   ],
+   "preferredTime": 2
+  },
+  {
+   "name": "Harlow Health Centre",
+   "street": "130 Vale Park Avenue",
+   "city": "London",
+   "postalCode": "NW6 1SZ",
+   "country": "United Kingdom",
+   "location": [
+    51.48398,
+    -0.14375
+   ],
+   "preferredTime": 1
+  },
+  {
+   "name": "Ivybridge Surgery",
+   "street": "148 Westmoor Terrace",
+   "city": "London",
+   "postalCode": "SE8 1HZ",
+   "country": "United Kingdom",
+   "location": [
+    51.55317,
+    -0.20753
+   ]
+  },
+  {
+   "name": "Kingsmead Care Home",
+   "street": "136 Elmfield Street",
+   "city": "London",
+   "postalCode": "N2 7DR",
+   "country": "United Kingdom",
+   "location": [
+    51.39867,
+    -0.03505
+   ]
+  },
+  {
+   "name": "Larchmont Day Hospital",
+   "street": "23 Harlow Avenue",
+   "city": "London",
+   "postalCode": "E5 8GZ",
+   "country": "United Kingdom",
+   "location": [
+    51.5394,
+    -0.16277
+   ]
+  },
+  {
+   "name": "Marlow Practice",
+   "street": "17 Larchmont Road",
+   "city": "London",
+   "postalCode": "W1 5HJ",
+   "country": "United Kingdom",
+   "location": [
+    51.47999,
+    -0.00292
+   ]
+  },
+  {
+   "name": "Northgate Clinic",
+   "street": "74 Stonebridge Avenue",
+   "city": "London",
+   "postalCode": "W6 6NX",
+   "country": "United Kingdom",
+   "location": [
+    51.59687,
+    -0.15551
+   ]
+  },
+  {
+   "name": "Oakhurst Health Centre",
+   "street": "147 Ashgrove Road",
+   "city": "London",
+   "postalCode": "N11 7WF",
+   "country": "United Kingdom",
+   "location": [
+    51.41035,
+    -0.12701
+   ]
+  },
+  {
+   "name": "Pinehill Surgery",
+   "street": "132 Oakhurst Avenue",
+   "city": "London",
+   "postalCode": "E16 8ZX",
+   "country": "United Kingdom",
+   "location": [
+    51.54064,
+    -0.06257
+   ]
+  },
+  {
+   "name": "Quarry Bank Care Home",
+   "street": "114 Bellwood Terrace",
+   "city": "London",
+   "postalCode": "N20 5NL",
+   "country": "United Kingdom",
+   "location": [
+    51.40602,
+    -0.10471
+   ],
+   "preferredTime": 2
+  },
+  {
+   "name": "Redcliffe Day Hospital",
+   "street": "112 Westmoor Avenue",
+   "city": "London",
+   "postalCode": "SW9 1TD",
+   "country": "United Kingdom",
+   "location": [
+    51.54203,
+    -0.18655
+   ]
+  },
+  {
+   "name": "Stonebridge Practice",
+   "street": "134 Ivybridge Lane",
+   "city": "London",
+   "postalCode": "N19 6UA",
+   "country": "United Kingdom",
+   "location": [
+    51.4404,
+    -0.01917
+   ],
+   "preferredTime": 1
+  },
+  {
+   "name": "Thornbury Clinic",
+   "street": "55 Thornbury Lane",
+   "city": "London",
+   "postalCode": "SW8 8ZE",
+   "country": "United Kingdom",
+   "location": [
+    51.56421,
+    -0.17617
+   ]
+  },
+  {
+   "name": "Underhill Health Centre",
+   "street": "39 Stonebridge Grove",
+   "city": "London",
+   "postalCode": "N20 3BP",
+   "country": "United Kingdom",
+   "location": [
+    51.48065,
+    -0.09005
+   ]
+  },
+  {
+   "name": "Vale Park Surgery",
+   "street": "135 Pinehill Lane",
+   "city": "London",
+   "postalCode": "N17 5NR",
+   "country": "United Kingdom",
+   "location": [
+    51.52688,
+    -0.12323
+   ]
+  },
+  {
+   "name": "Westmoor Care Home",
+   "street": "100 Oakhurst Terrace",
+   "city": "London",
+   "postalCode": "SW3 5LF",
+   "country": "United Kingdom",
+   "location": [
+    51.39198,
+    -0.1368
+   ]
+  },
+  {
+   "name": "Ashgrove Day Hospital 2",
+   "street": "96 Ivybridge Avenue",
+   "city": "London",
+   "postalCode": "SE10 1UE",
+   "country": "United Kingdom",
+   "location": [
+    51.55688,
+    -0.22061
+   ]
+  },
+  {
+   "name": "Bellwood Practice 2",
+   "street": "159 Oakhurst Road",
+   "city": "London",
+   "postalCode": "SW7 9WA",
+   "country": "United Kingdom",
+   "location": [
+    51.41152,
+    -0.13387
+   ]
+  },
+  {
+   "name": "Carlton Clinic 2",
+   "street": "110 Stonebridge Lane",
+   "city": "London",
+   "postalCode": "NW7 4QH",
+   "country": "United Kingdom",
+   "location": [
+    51.59521,
+    -0.04636
+   ]
+  },
+  {
+   "name": "Dunmore Health Centre 2",
+   "street": "133 Pinehill Grove",
+   "city": "London",
+   "postalCode": "E16 3ZQ",
+   "country": "United Kingdom",
+   "location": [
+    51.43987,
+    -0.11731
+   ]
+  },
+  {
+   "name": "Elmfield Surgery 2",
+   "street": "13 Carlton Grove",
+   "city": "London",
+   "postalCode": "NW11 3BR",
+   "country": "United Kingdom",
+   "location": [
+    51.53266,
+    -0.14283
+   ],
+   "preferredDayOffset": 0
+  },
+  {
+   "name": "Fairoak Care Home 2",
+   "street": "135 Underhill Lane",
+   "city": "London",
+   "postalCode": "N19 1GL",
+   "country": "United Kingdom",
+   "location": [
+    51.41163,
+    -0.06657
+   ]
+  },
+  {
+   "name": "Greenway Day Hospital 2",
+   "street": "24 Harlow Street",
+   "city": "London",
+   "postalCode": "SW10 1JH",
+   "country": "United Kingdom",
+   "location": [
+    51.55761,
+    -0.08547
+   ],
+   "preferredTime": 1
+  },
+  {
+   "name": "Harlow Practice 2",
+   "street": "133 Vale Park Terrace",
+   "city": "London",
+   "postalCode": "NW4 3WW",
+   "country": "United Kingdom",
+   "location": [
+    51.44163,
+    -0.19683
+   ]
+  },
+  {
+   "name": "Ivybridge Clinic 2",
+   "street": "64 Westmoor Road",
+   "city": "London",
+   "postalCode": "SW10 8QA",
+   "country": "United Kingdom",
+   "location": [
+    51.60755,
+    -0.05468
+   ]
+  },
+  {
+   "name": "Kingsmead Health Centre 2",
+   "street": "172 Underhill Grove",
+   "city": "London",
+   "postalCode": "E8 1NG",
+   "country": "United Kingdom",
+   "location": [
+    51.46024,
+    -0.04037
+   ]
+  },
+  {
+   "name": "Larchmont Surgery 2",
+   "street": "132 Underhill Road",
+   "city": "London",
+   "postalCode": "SW1 6JX",
+   "country": "United Kingdom",
+   "location": [
+    51.54807,
+    -0.10971
+   ]
+  },
+  {
+   "name": "Marlow Care Home 2",
+   "street": "82 Carlton Grove",
+   "city": "London",
+   "postalCode": "W12 3NJ",
+   "country": "United Kingdom",
+   "location": [
+    51.39102,
+    -0.09717
+   ]
+  },
+  {
+   "name": "Northgate Day Hospital 2",
+   "street": "95 Vale Park Terrace",
+   "city": "London",
+   "postalCode": "W12 7AF",
+   "country": "United Kingdom",
+   "location": [
+    51.52421,
+    -0.21692
+   ]
+  },
+  {
+   "name": "Oakhurst Practice 2",
+   "street": "34 Westmoor Avenue",
+   "city": "London",
+   "postalCode": "E19 8TJ",
+   "country": "United Kingdom",
+   "location": [
+    51.41096,
+    -0.17137
+   ]
+  },
+  {
+   "name": "Pinehill Clinic 2",
+   "street": "133 Fairoak Grove",
+   "city": "London",
+   "postalCode": "NW18 1AS",
+   "country": "United Kingdom",
+   "location": [
+    51.57773,
+    -0.15885
+   ]
+  },
+  {
+   "name": "Quarry Bank Health Centre 2",
+   "street": "24 Pinehill Avenue",
+   "city": "London",
+   "postalCode": "SE5 4PY",
+   "country": "United Kingdom",
+   "location": [
+    51.41722,
+    -0.00551
+   ]
+  },
+  {
+   "name": "Redcliffe Surgery 2",
+   "street": "34 Oakhurst Road",
+   "city": "London",
+   "postalCode": "W1 1WD",
+   "country": "United Kingdom",
+   "location": [
+    51.54665,
+    -0.02923
+   ]
+  },
+  {
+   "name": "Stonebridge Care Home 2",
+   "street": "102 Carlton Grove",
+   "city": "London",
+   "postalCode": "N13 2WR",
+   "country": "United Kingdom",
+   "location": [
+    51.40972,
+    -0.1865
+   ]
+  },
+  {
+   "name": "Thornbury Day Hospital 2",
+   "street": "164 Kingsmead Lane",
+   "city": "London",
+   "postalCode": "W5 9EA",
+   "country": "United Kingdom",
+   "location": [
+    51.57967,
+    -0.0079
+   ]
+  },
+  {
+   "name": "Underhill Practice 2",
+   "street": "115 Ivybridge Road",
+   "city": "London",
+   "postalCode": "W10 1ST",
+   "country": "United Kingdom",
+   "location": [
+    51.47272,
+    -0.00592
+   ]
+  },
+  {
+   "name": "Vale Park Clinic 2",
+   "street": "83 Quarry Bank Grove",
+   "city": "London",
+   "postalCode": "NW13 8HD",
+   "country": "United Kingdom",
+   "location": [
+    51.56724,
+    -0.05534
+   ]
+  },
+  {
+   "name": "Westmoor Health Centre 2",
+   "street": "91 Bellwood Lane",
+   "city": "London",
+   "postalCode": "SE6 3LJ",
+   "country": "United Kingdom",
+   "location": [
+    51.43296,
+    -0.13467
+   ]
+  },
+  {
+   "name": "Ashgrove Surgery 3",
+   "street": "81 Marlow Terrace",
+   "city": "London",
+   "postalCode": "SE17 4WP",
+   "country": "United Kingdom",
+   "location": [
+    51.55673,
+    -0.11392
+   ]
+  },
+  {
+   "name": "Bellwood Care Home 3",
+   "street": "168 Quarry Bank Avenue",
+   "city": "London",
+   "postalCode": "W8 4FY",
+   "country": "United Kingdom",
+   "location": [
+    51.48949,
+    -0.09759
+   ]
+  },
+  {
+   "name": "Carlton Day Hospital 3",
+   "street": "31 Kingsmead Road",
+   "city": "London",
+   "postalCode": "SW4 3GZ",
+   "country": "United Kingdom",
+   "location": [
+    51.52828,
+    -0.16315
+   ]
+  },
+  {
+   "name": "Dunmore Practice 3",
+   "street": "37 Ashgrove Avenue",
+   "city": "London",
+   "postalCode": "SW1 4NH",
+   "country": "United Kingdom",
+   "location": [
+    51.44032,
+    -0.10261
+   ]
+  },
+  {
+   "name": "Elmfield Clinic 3",
+   "street": "166 Redcliffe Avenue",
+   "city": "London",
+   "postalCode": "SE8 1GA",
+   "country": "United Kingdom",
+   "location": [
+    51.56643,
+    -0.19295
+   ]
+  },
+  {
+   "name": "Fairoak Health Centre 3",
+   "street": "121 Quarry Bank Road",
+   "city": "London",
+   "postalCode": "N9 6ZZ",
+   "country": "United Kingdom",
+   "location": [
+    51.47013,
+    -0.13204
+   ]
+  },
+  {
+   "name": "Greenway Surgery 3",
+   "street": "75 Underhill Street",
+   "city": "London",
+   "postalCode": "W2 6ZQ",
+   "country": "United Kingdom",
+   "location": [
+    51.58462,
+    -0.10665
+   ],
+   "preferredTime": 1
+  },
+  {
+   "name": "Harlow Care Home 3",
+   "street": "175 Elmfield Lane",
+   "city": "London",
+   "postalCode": "N2 3AQ",
+   "country": "United Kingdom",
+   "location": [
+    51.39902,
+    -0.09122
+   ]
+  },
+  {
+   "name": "Ivybridge Day Hospital 3",
+   "street": "101 Ashgrove Road",
+   "city": "London",
+   "postalCode": "W9 5LU",
+   "country": "United Kingdom",
+   "location": [
+    51.5212,
+    -0.06255
+   ]
+  },
+  {
+   "name": "Kingsmead Practice 3",
+   "street": "6 Oakhurst Lane",
+   "city": "London",
+   "postalCode": "SE2 8NW",
+   "country": "United Kingdom",
+   "location": [
+    51.45941,
+    -0.10811
+   ]
+  },
+  {
+   "name": "Larchmont Clinic 3",
+   "street": "135 Underhill Terrace",
+   "city": "London",
+   "postalCode": "SW17 2RP",
+   "country": "United Kingdom",
+   "location": [
+    51.55243,
+    -0.04395
+   ]
+  },
+  {
+   "name": "Marlow Health Centre 3",
+   "street": "72 Stonebridge Lane",
+   "city": "London",
+   "postalCode": "W20 4XP",
+   "country": "United Kingdom",
+   "location": [
+    51.47972,
+    -0.11366
+   ]
+  },
+  {
+   "name": "Northgate Surgery 3",
+   "street": "65 Kingsmead Lane",
+   "city": "London",
+   "postalCode": "N4 9SB",
+   "country": "United Kingdom",
+   "location": [
+    51.5948,
+    -0.04009
+   ]
+  },
+  {
+   "name": "Oakhurst Care Home 3",
+   "street": "96 Oakhurst Avenue",
+   "city": "London",
+   "postalCode": "E17 4BQ",
+   "country": "United Kingdom",
+   "location": [
+    51.44367,
+    -0.22853
+   ]
+  },
+  {
+   "name": "Pinehill Day Hospital 3",
+   "street": "2 Larchmont Avenue",
+   "city": "London",
+   "postalCode": "W1 5FF",
+   "country": "United Kingdom",
+   "location": [
+    51.59726,
+    -0.11758
+   ]
+  },
+  {
+   "name": "Quarry Bank Practice 3",
+   "street": "9 Stonebridge Avenue",
+   "city": "London",
+   "postalCode": "N2 2DZ",
+   "country": "United Kingdom",
+   "location": [
+    51.47419,
+    -0.10212
+   ]
+  },
+  {
+   "name": "Redcliffe Clinic 3",
+   "street": "80 Kingsmead Terrace",
+   "city": "London",
+   "postalCode": "E4 6DD",
+   "country": "United Kingdom",
+   "location": [
+    51.54838,
+    -0.04186
+   ]
+  },
+  {
+   "name": "Stonebridge Health Centre 3",
+   "street": "74 Ashgrove Lane",
+   "city": "London",
+   "postalCode": "E13 9LF",
+   "country": "United Kingdom",
+   "location": [
+    51.40932,
+    -0.20399
+   ]
+  },
+  {
+   "name": "Thornbury Surgery 3",
+   "street": "140 Thornbury Road",
+   "city": "London",
+   "postalCode": "SE19 9WA",
+   "country": "United Kingdom",
+   "location": [
+    51.54765,
+    -0.16495
+   ]
+  },
+  {
+   "name": "Underhill Care Home 3",
+   "street": "68 Redcliffe Lane",
+   "city": "London",
+   "postalCode": "N20 4ZA",
+   "country": "United Kingdom",
+   "location": [
+    51.52833,
+    -0.02183
+   ],
+   "preferredDayOffset": 1
+  },
+  {
+   "name": "Vale Park Day Hospital 3",
+   "street": "39 Marlow Street",
+   "city": "London",
+   "postalCode": "W7 1DJ",
+   "country": "United Kingdom",
+   "location": [
+    51.5885,
+    -0.21555
+   ]
+  },
+  {
+   "name": "Westmoor Practice 3",
+   "street": "86 Carlton Road",
+   "city": "London",
+   "postalCode": "SE13 4GY",
+   "country": "United Kingdom",
+   "location": [
+    51.54565,
+    -0.20706
+   ]
+  },
+  {
+   "name": "Ashgrove Clinic 4",
+   "street": "107 Underhill Street",
+   "city": "London",
+   "postalCode": "N2 7YZ",
+   "country": "United Kingdom",
+   "location": [
+    51.47608,
+    -0.15972
+   ]
+  },
+  {
+   "name": "Bellwood Health Centre 4",
+   "street": "80 Oakhurst Grove",
+   "city": "London",
+   "postalCode": "E4 3XB",
+   "country": "United Kingdom",
+   "location": [
+    51.60371,
+    -0.18732
+   ]
+  },
+  {
+   "name": "Carlton Surgery 4",
+   "street": "166 Pinehill Avenue",
+   "city": "London",
+   "postalCode": "NW11 6HT",
+   "country": "United Kingdom",
+   "location": [
+    51.40184,
+    -0.10829
+   ],
+   "preferredTechnician": "Owen Brennan"
+  },
+  {
+   "name": "Dunmore Care Home 4",
+   "street": "17 Ivybridge Street",
+   "city": "London",
+   "postalCode": "NW3 5QH",
+   "country": "United Kingdom",
+   "location": [
+    51.5669,
+    -0.17101
+   ]
+  },
+  {
+   "name": "Elmfield Day Hospital 4",
+   "street": "46 Vale Park Grove",
+   "city": "London",
+   "postalCode": "SW19 1PW",
+   "country": "United Kingdom",
+   "location": [
+    51.4437,
+    -0.12632
+   ]
+  },
+  {
+   "name": "Fairoak Practice 4",
+   "street": "127 Northgate Road",
+   "city": "London",
+   "postalCode": "SW11 5WE",
+   "country": "United Kingdom",
+   "location": [
+    51.60969,
+    -0.20357
+   ],
+   "preferredTime": 1
+  },
+  {
+   "name": "Greenway Clinic 4",
+   "street": "10 Bellwood Street",
+   "city": "London",
+   "postalCode": "NW10 3GN",
+   "country": "United Kingdom",
+   "location": [
+    51.47365,
+    -0.0981
+   ],
+   "preferredTime": 2
+  },
+  {
+   "name": "Harlow Health Centre 4",
+   "street": "165 Greenway Grove",
+   "city": "London",
+   "postalCode": "NW4 1FR",
+   "country": "United Kingdom",
+   "location": [
+    51.54821,
+    0.00486
+   ],
+   "preferredTime": 1
+  },
+  {
+   "name": "Ivybridge Surgery 4",
+   "street": "13 Larchmont Terrace",
+   "city": "London",
+   "postalCode": "SW5 8FF",
+   "country": "United Kingdom",
+   "location": [
+    51.42892,
+    -0.15767
+   ],
+   "preferredTime": 2
+  },
+  {
+   "name": "Kingsmead Care Home 4",
+   "street": "29 Fairoak Terrace",
+   "city": "London",
+   "postalCode": "SE15 8SG",
+   "country": "United Kingdom",
+   "location": [
+    51.5844,
+    -0.00852
+   ]
+  },
+  {
+   "name": "Larchmont Day Hospital 4",
+   "street": "96 Northgate Road",
+   "city": "London",
+   "postalCode": "E13 1ZQ",
+   "country": "United Kingdom",
+   "location": [
+    51.46761,
+    -0.14146
+   ]
+  },
+  {
+   "name": "Marlow Practice 4",
+   "street": "142 Stonebridge Street",
+   "city": "London",
+   "postalCode": "SW20 4NL",
+   "country": "United Kingdom",
+   "location": [
+    51.5464,
+    -0.04374
+   ]
+  },
+  {
+   "name": "Northgate Clinic 4",
+   "street": "170 Fairoak Avenue",
+   "city": "London",
+   "postalCode": "E11 6SU",
+   "country": "United Kingdom",
+   "location": [
+    51.40502,
+    -0.16356
+   ]
+  },
+  {
+   "name": "Oakhurst Health Centre 4",
+   "street": "93 Thornbury Terrace",
+   "city": "London",
+   "postalCode": "E15 6NF",
+   "country": "United Kingdom",
+   "location": [
+    51.58687,
+    -0.03445
+   ],
+   "preferredDayOffset": 2
+  },
+  {
+   "name": "Pinehill Surgery 4",
+   "street": "177 Harlow Road",
+   "city": "London",
+   "postalCode": "N3 9GE",
+   "country": "United Kingdom",
+   "location": [
+    51.41679,
+    -0.06231
+   ],
+   "preferredTime": 1
+  },
+  {
+   "name": "Quarry Bank Care Home 4",
+   "street": "83 Thornbury Street",
+   "city": "London",
+   "postalCode": "N18 8BH",
+   "country": "United Kingdom",
+   "location": [
+    51.57265,
+    -0.05537
+   ]
+  },
+  {
+   "name": "Redcliffe Day Hospital 4",
+   "street": "97 Oakhurst Avenue",
+   "city": "London",
+   "postalCode": "N10 9RN",
+   "country": "United Kingdom",
+   "location": [
+    51.44896,
+    -0.12292
+   ]
+  },
+  {
+   "name": "Stonebridge Practice 4",
+   "street": "74 Pinehill Road",
+   "city": "London",
+   "postalCode": "SE17 5PJ",
+   "country": "United Kingdom",
+   "location": [
+    51.54049,
+    -0.15371
+   ]
+  },
+  {
+   "name": "Thornbury Clinic 4",
+   "street": "67 Westmoor Lane",
+   "city": "London",
+   "postalCode": "SW9 1FL",
+   "country": "United Kingdom",
+   "location": [
+    51.45174,
+    -0.09282
+   ]
+  },
+  {
+   "name": "Underhill Health Centre 4",
+   "street": "157 Greenway Lane",
+   "city": "London",
+   "postalCode": "SW5 7FH",
+   "country": "United Kingdom",
+   "location": [
+    51.57025,
+    -0.18257
+   ]
+  },
+  {
+   "name": "Vale Park Surgery 4",
+   "street": "158 Ashgrove Street",
+   "city": "London",
+   "postalCode": "E16 8BZ",
+   "country": "United Kingdom",
+   "location": [
+    51.44068,
+    -0.16335
+   ]
+  },
+  {
+   "name": "Westmoor Care Home 4",
+   "street": "163 Ivybridge Avenue",
+   "city": "London",
+   "postalCode": "W20 7RL",
+   "country": "United Kingdom",
+   "location": [
+    51.59807,
+    -0.09403
+   ],
+   "preferredTechnician": "Nadia Rahimi"
+  },
+  {
+   "name": "Ashgrove Day Hospital 5",
+   "street": "119 Elmfield Lane",
+   "city": "London",
+   "postalCode": "W7 2RA",
+   "country": "United Kingdom",
+   "location": [
+    51.39576,
+    -0.07385
+   ]
+  },
+  {
+   "name": "Bellwood Practice 5",
+   "street": "6 Fairoak Lane",
+   "city": "London",
+   "postalCode": "SE8 7YD",
+   "country": "United Kingdom",
+   "location": [
+    51.55638,
+    -0.06838
+   ]
+  },
+  {
+   "name": "Carlton Clinic 5",
+   "street": "79 Ashgrove Grove",
+   "city": "London",
+   "postalCode": "E9 3SH",
+   "country": "United Kingdom",
+   "location": [
+    51.43127,
+    0.0284
+   ]
+  },
+  {
+   "name": "Dunmore Health Centre 5",
+   "street": "82 Pinehill Lane",
+   "city": "London",
+   "postalCode": "W6 2EY",
+   "country": "United Kingdom",
+   "location": [
+    51.58963,
+    -0.15967
+   ]
+  },
+  {
+   "name": "Elmfield Surgery 5",
+   "street": "23 Stonebridge Street",
+   "city": "London",
+   "postalCode": "SW12 2LH",
+   "country": "United Kingdom",
+   "location": [
+    51.43138,
+    -0.11875
+   ]
+  },
+  {
+   "name": "Fairoak Care Home 5",
+   "street": "37 Stonebridge Road",
+   "city": "London",
+   "postalCode": "N12 1TR",
+   "country": "United Kingdom",
+   "location": [
+    51.55339,
+    -0.11426
+   ]
+  },
+  {
+   "name": "Greenway Day Hospital 5",
+   "street": "113 Kingsmead Street",
+   "city": "London",
+   "postalCode": "E7 2ER",
+   "country": "United Kingdom",
+   "location": [
+    51.3999,
+    -0.20271
+   ]
+  },
+  {
+   "name": "Harlow Practice 5",
+   "street": "120 Dunmore Terrace",
+   "city": "London",
+   "postalCode": "N12 4RD",
+   "country": "United Kingdom",
+   "location": [
+    51.52569,
+    -0.13201
+   ]
+  },
+  {
+   "name": "Ivybridge Clinic 5",
+   "street": "64 Ashgrove Road",
+   "city": "London",
+   "postalCode": "E3 8RF",
+   "country": "United Kingdom",
+   "location": [
+    51.40481,
+    -0.12276
+   ]
+  },
+  {
+   "name": "Kingsmead Health Centre 5",
+   "street": "138 Vale Park Avenue",
+   "city": "London",
+   "postalCode": "W2 5SL",
+   "country": "United Kingdom",
+   "location": [
+    51.60205,
+    -0.06239
+   ]
+  },
+  {
+   "name": "Larchmont Surgery 5",
+   "street": "110 Bellwood Road",
+   "city": "London",
+   "postalCode": "W18 8GA",
+   "country": "United Kingdom",
+   "location": [
+    51.40051,
+    -0.15562
+   ]
+  }
+ ],
+ "workOrders": [
+  {
+   "customer": "Ashgrove Clinic",
+   "incidentType": "Ventilator annual service",
+   "territory": "London North",
+   "priority": "Low",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO000"
+  },
+  {
+   "customer": "Bellwood Health Centre",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Low",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO001"
+  },
+  {
+   "customer": "Carlton Surgery",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": [
+    "10:00",
+    "14:00"
+   ],
+   "ref": "WO002"
+  },
+  {
+   "customer": "Dunmore Care Home",
+   "incidentType": "Ventilator annual service",
+   "territory": "London South",
+   "priority": "Low",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO003"
+  },
+  {
+   "customer": "Elmfield Day Hospital",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO004"
+  },
+  {
+   "customer": "Fairoak Practice",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO005",
+   "roles": [
+    "Senior Engineer"
+   ]
+  },
+  {
+   "customer": "Greenway Clinic",
+   "incidentType": "Ventilator annual service",
+   "territory": "London North",
+   "priority": "High",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO006"
+  },
+  {
+   "customer": "Harlow Health Centre",
+   "incidentType": "Dialysis machine repair",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO007",
+   "timeGroup": "Two-hour slots"
+  },
+  {
+   "customer": "Ivybridge Surgery",
+   "incidentType": "Ventilator annual service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": [
+    "13:00",
+    "17:00"
+   ],
+   "ref": "WO008"
+  },
+  {
+   "customer": "Kingsmead Care Home",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO009",
+   "resourcePreferences": [
+    {
+     "type": "preferred",
+     "technician": "Owen Brennan"
+    }
+   ]
+  },
+  {
+   "customer": "Larchmont Day Hospital",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO010"
+  },
+  {
+   "customer": "Marlow Practice",
+   "incidentType": "Ventilator annual service",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": [
+    "13:00",
+    "17:00"
+   ],
+   "ref": "WO011"
+  },
+  {
+   "customer": "Northgate Clinic",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "Low",
+   "day": 0,
+   "timeWindow": [
+    "09:00",
+    "13:00"
+   ],
+   "ref": "WO012"
+  },
+  {
+   "customer": "Oakhurst Health Centre",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": [
+    "09:00",
+    "13:00"
+   ],
+   "ref": "WO013"
+  },
+  {
+   "customer": "Pinehill Surgery",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO014",
+   "timeGroup": "Two-hour slots"
+  },
+  {
+   "customer": "Quarry Bank Care Home",
+   "incidentType": "Infusion pump service",
+   "territory": "London South",
+   "priority": "High",
+   "day": 0,
+   "timeWindow": [
+    "13:00",
+    "17:00"
+   ],
+   "ref": "WO015"
+  },
+  {
+   "customer": "Redcliffe Day Hospital",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "High",
+   "day": 0,
+   "timeWindow": [
+    "13:00",
+    "17:00"
+   ],
+   "ref": "WO016"
+  },
+  {
+   "customer": "Stonebridge Practice",
+   "incidentType": "Infusion pump service",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO017"
+  },
+  {
+   "customer": "Thornbury Clinic",
+   "incidentType": "Imaging unit calibration",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO018",
+   "roles": [
+    "Senior Engineer"
+   ]
+  },
+  {
+   "customer": "Underhill Health Centre",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO019",
+   "resourcePreferences": [
+    {
+     "type": "preferred",
+     "technician": "Owen Brennan"
+    }
+   ]
+  },
+  {
+   "customer": "Vale Park Surgery",
+   "incidentType": "Imaging unit calibration",
+   "territory": "London North",
+   "priority": "High",
+   "day": 0,
+   "timeWindow": [
+    "09:00",
+    "13:00"
+   ],
+   "ref": "WO020"
+  },
+  {
+   "customer": "Westmoor Care Home",
+   "incidentType": "Infusion pump service",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO021"
+  },
+  {
+   "customer": "Ashgrove Day Hospital 2",
+   "incidentType": "Ventilator annual service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO022"
+  },
+  {
+   "customer": "Bellwood Practice 2",
+   "incidentType": "Dialysis machine repair",
+   "territory": "London South",
+   "priority": "Urgent",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO023"
+  },
+  {
+   "customer": "Carlton Clinic 2",
+   "incidentType": "Dialysis machine repair",
+   "territory": "London North",
+   "priority": "High",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO024"
+  },
+  {
+   "customer": "Dunmore Health Centre 2",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": [
+    "08:00",
+    "12:00"
+   ],
+   "ref": "WO025"
+  },
+  {
+   "customer": "Elmfield Surgery 2",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Urgent",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO026"
+  },
+  {
+   "customer": "Fairoak Care Home 2",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Low",
+   "day": 0,
+   "timeWindow": [
+    "10:00",
+    "14:00"
+   ],
+   "ref": "WO027"
+  },
+  {
+   "customer": "Greenway Day Hospital 2",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO028"
+  },
+  {
+   "customer": "Harlow Practice 2",
+   "incidentType": "Infusion pump service",
+   "territory": "London South",
+   "priority": "Low",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO029",
+   "promised": [
+    "08:00",
+    "11:00"
+   ]
+  },
+  {
+   "customer": "Ivybridge Clinic 2",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO030"
+  },
+  {
+   "customer": "Kingsmead Health Centre 2",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO031"
+  },
+  {
+   "customer": "Larchmont Surgery 2",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO032"
+  },
+  {
+   "customer": "Marlow Care Home 2",
+   "incidentType": "Imaging unit calibration",
+   "territory": "London South",
+   "priority": "Low",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO033"
+  },
+  {
+   "customer": "Northgate Day Hospital 2",
+   "incidentType": "Ventilator annual service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO034"
+  },
+  {
+   "customer": "Oakhurst Practice 2",
+   "incidentType": "Ventilator annual service",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO035"
+  },
+  {
+   "customer": "Pinehill Clinic 2",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO036"
+  },
+  {
+   "customer": "Quarry Bank Health Centre 2",
+   "incidentType": "Infusion pump service",
+   "territory": "London South",
+   "priority": "High",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO037",
+   "resourcePreferences": [
+    {
+     "type": "mustChooseFrom",
+     "technician": "Owen Brennan"
+    },
+    {
+     "type": "mustChooseFrom",
+     "technician": "Victor Osei"
+    }
+   ]
+  },
+  {
+   "customer": "Redcliffe Surgery 2",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO038"
+  },
+  {
+   "customer": "Stonebridge Care Home 2",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Low",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO039"
+  },
+  {
+   "customer": "Thornbury Day Hospital 2",
+   "incidentType": "Ventilator annual service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO040"
+  },
+  {
+   "customer": "Underhill Practice 2",
+   "incidentType": "Infusion pump service",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO041"
+  },
+  {
+   "customer": "Vale Park Clinic 2",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": [
+    "10:00",
+    "14:00"
+   ],
+   "ref": "WO042"
+  },
+  {
+   "customer": "Westmoor Health Centre 2",
+   "incidentType": "Dialysis machine repair",
+   "territory": "London South",
+   "priority": "Low",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO043"
+  },
+  {
+   "customer": "Ashgrove Surgery 3",
+   "incidentType": "Imaging unit calibration",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": [
+    "13:00",
+    "17:00"
+   ],
+   "ref": "WO044"
+  },
+  {
+   "customer": "Bellwood Care Home 3",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "High",
+   "day": 1,
+   "timeWindow": [
+    "08:00",
+    "12:00"
+   ],
+   "ref": "WO045"
+  },
+  {
+   "customer": "Carlton Day Hospital 3",
+   "incidentType": "Dialysis machine repair",
+   "territory": "London North",
+   "priority": "High",
+   "day": 1,
+   "timeWindow": [
+    "13:00",
+    "17:00"
+   ],
+   "ref": "WO046"
+  },
+  {
+   "customer": "Dunmore Practice 3",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "High",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO047"
+  },
+  {
+   "customer": "Elmfield Clinic 3",
+   "incidentType": "Dialysis machine repair",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO048"
+  },
+  {
+   "customer": "Fairoak Health Centre 3",
+   "incidentType": "Imaging unit calibration",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO049"
+  },
+  {
+   "customer": "Greenway Surgery 3",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO050"
+  },
+  {
+   "customer": "Harlow Care Home 3",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO051"
+  },
+  {
+   "customer": "Ivybridge Day Hospital 3",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO052"
+  },
+  {
+   "customer": "Kingsmead Practice 3",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Urgent",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO053"
+  },
+  {
+   "customer": "Larchmont Clinic 3",
+   "incidentType": "Dialysis machine repair",
+   "territory": "London North",
+   "priority": "High",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO054"
+  },
+  {
+   "customer": "Marlow Health Centre 3",
+   "incidentType": "Infusion pump service",
+   "territory": "London South",
+   "priority": "High",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO055",
+   "promised": [
+    "09:00",
+    "12:00"
+   ]
+  },
+  {
+   "customer": "Northgate Surgery 3",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": [
+    "13:00",
+    "17:00"
+   ],
+   "ref": "WO056"
+  },
+  {
+   "customer": "Oakhurst Care Home 3",
+   "incidentType": "Imaging unit calibration",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO057"
+  },
+  {
+   "customer": "Pinehill Day Hospital 3",
+   "incidentType": "Dialysis machine repair",
+   "territory": "London North",
+   "priority": "High",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO058"
+  },
+  {
+   "customer": "Quarry Bank Practice 3",
+   "incidentType": "Dialysis machine repair",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": [
+    "08:00",
+    "12:00"
+   ],
+   "ref": "WO059"
+  },
+  {
+   "customer": "Redcliffe Clinic 3",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Urgent",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO060"
+  },
+  {
+   "customer": "Stonebridge Health Centre 3",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO061"
+  },
+  {
+   "customer": "Thornbury Surgery 3",
+   "incidentType": "Ventilator annual service",
+   "territory": "London North",
+   "priority": "Low",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO062",
+   "resourcePreferences": [
+    {
+     "type": "preferred",
+     "technician": "Priyanka Shah"
+    }
+   ]
+  },
+  {
+   "customer": "Underhill Care Home 3",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO063"
+  },
+  {
+   "customer": "Vale Park Day Hospital 3",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Low",
+   "day": 1,
+   "timeWindow": null,
+   "ref": "WO064"
+  },
+  {
+   "customer": "Westmoor Practice 3",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO065"
+  },
+  {
+   "customer": "Ashgrove Clinic 4",
+   "incidentType": "Ventilator annual service",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO066",
+   "promised": [
+    "08:00",
+    "11:00"
+   ]
+  },
+  {
+   "customer": "Bellwood Health Centre 4",
+   "incidentType": "Imaging unit calibration",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO067"
+  },
+  {
+   "customer": "Carlton Surgery 4",
+   "incidentType": "Infusion pump service",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO068"
+  },
+  {
+   "customer": "Dunmore Care Home 4",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Low",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO069"
+  },
+  {
+   "customer": "Elmfield Day Hospital 4",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO070"
+  },
+  {
+   "customer": "Fairoak Practice 4",
+   "incidentType": "Imaging unit calibration",
+   "territory": "London North",
+   "priority": "Urgent",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO071",
+   "orgUnits": [
+    "St. Elmore North Depot"
+   ]
+  },
+  {
+   "customer": "Greenway Clinic 4",
+   "incidentType": "Infusion pump service",
+   "territory": "London South",
+   "priority": "Urgent",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO072"
+  },
+  {
+   "customer": "Harlow Health Centre 4",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "High",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO073"
+  },
+  {
+   "customer": "Ivybridge Surgery 4",
+   "incidentType": "Ventilator annual service",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO074"
+  },
+  {
+   "customer": "Kingsmead Care Home 4",
+   "incidentType": "Imaging unit calibration",
+   "territory": "London North",
+   "priority": "Urgent",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO075"
+  },
+  {
+   "customer": "Larchmont Day Hospital 4",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Low",
+   "day": 2,
+   "timeWindow": [
+    "10:00",
+    "14:00"
+   ],
+   "ref": "WO076"
+  },
+  {
+   "customer": "Marlow Practice 4",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "High",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO077"
+  },
+  {
+   "customer": "Northgate Clinic 4",
+   "incidentType": "Ventilator annual service",
+   "territory": "London South",
+   "priority": "Low",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO078"
+  },
+  {
+   "customer": "Oakhurst Health Centre 4",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO079"
+  },
+  {
+   "customer": "Pinehill Surgery 4",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO080"
+  },
+  {
+   "customer": "Quarry Bank Care Home 4",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "High",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO081",
+   "resourcePreferences": [
+    {
+     "type": "restricted",
+     "technician": "Nadia Rahimi"
+    }
+   ]
+  },
+  {
+   "customer": "Redcliffe Day Hospital 4",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "High",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO082"
+  },
+  {
+   "customer": "Stonebridge Practice 4",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "High",
+   "day": 2,
+   "timeWindow": [
+    "09:00",
+    "13:00"
+   ],
+   "ref": "WO083"
+  },
+  {
+   "customer": "Thornbury Clinic 4",
+   "incidentType": "Ventilator annual service",
+   "territory": "London South",
+   "priority": "High",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO084"
+  },
+  {
+   "customer": "Underhill Health Centre 4",
+   "incidentType": "Ventilator annual service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": [
+    "10:00",
+    "14:00"
+   ],
+   "ref": "WO085"
+  },
+  {
+   "customer": "Vale Park Surgery 4",
+   "incidentType": "Infusion pump service",
+   "territory": "London South",
+   "priority": "High",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO086"
+  },
+  {
+   "customer": "Westmoor Care Home 4",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "Low",
+   "day": 2,
+   "timeWindow": [
+    "10:00",
+    "14:00"
+   ],
+   "ref": "WO087"
+  },
+  {
+   "customer": "Ashgrove Day Hospital 5",
+   "incidentType": "Imaging unit calibration",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO088",
+   "timeGroup": "Two-hour slots"
+  },
+  {
+   "customer": "Bellwood Practice 5",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO089"
+  },
+  {
+   "customer": "Carlton Clinic 5",
+   "incidentType": "Dialysis machine repair",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO090"
+  },
+  {
+   "customer": "Dunmore Health Centre 5",
+   "incidentType": "Ventilator annual service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO091"
+  },
+  {
+   "customer": "Elmfield Surgery 5",
+   "incidentType": "Infusion pump service",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO092"
+  },
+  {
+   "customer": "Fairoak Care Home 5",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO093"
+  },
+  {
+   "customer": "Greenway Day Hospital 5",
+   "incidentType": "Imaging unit calibration",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": [
+    "08:00",
+    "12:00"
+   ],
+   "ref": "WO094"
+  },
+  {
+   "customer": "Harlow Practice 5",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "High",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO095"
+  },
+  {
+   "customer": "Ivybridge Clinic 5",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO096"
+  },
+  {
+   "customer": "Kingsmead Health Centre 5",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO097"
+  },
+  {
+   "customer": "Larchmont Surgery 5",
+   "incidentType": "Electrical safety check",
+   "territory": "London South",
+   "priority": "High",
+   "day": 2,
+   "timeWindow": null,
+   "ref": "WO098"
+  },
+  {
+   "customer": "Larchmont Clinic 3",
+   "incidentType": "Electrical safety check",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO099"
+  },
+  {
+   "customer": "Larchmont Clinic 3",
+   "incidentType": "Infusion pump service",
+   "territory": "London North",
+   "priority": "Normal",
+   "day": 0,
+   "timeWindow": null,
+   "ref": "WO100",
+   "after": {
+    "ref": "WO099",
+    "sameResource": true
+   }
+  },
+  {
+   "customer": "Underhill Practice 2",
+   "incidentType": "Dialysis machine repair",
+   "territory": "London South",
+   "priority": "High",
+   "day": 0,
+   "timeWindow": [
+    "10:00",
+    "15:00"
+   ],
+   "ref": "WO101",
+   "engineers": 2
+  }
+ ]
+}

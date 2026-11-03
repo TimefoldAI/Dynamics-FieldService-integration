@@ -1,0 +1,76 @@
+# Routing policy for the Field Service integration.
+#
+# Nearly everything comes from Dynamics 365: who the technicians are, what they
+# are qualified for, where they start the day, when they work (their resource
+# calendar, net of time off), where the jobs are, how long each takes, when the
+# customer expects them and how important they are. This file holds only the
+# operating policy that has no standard Field Service home.
+
+routingRules:
+  # How far past the end of the working day a technician may run. Timefold
+  # treats the calendar's end as a soft limit and this as the hard one, so it
+  # overruns only when that beats leaving a job undone.
+  maxOvertimeMinutes: 30
+
+  # Keep each territory's work with the technicians who cover it
+  # (msdyn_resourceterritory). Turn off to let Timefold move work across
+  # territories when that shortens the day.
+  restrictToOwnTerritory: true
+
+priority:
+  # Field Service leaves the direction of msdyn_priority's Level of Importance
+  # to each organisation. The Field Service sample data, and this demo, use a
+  # higher number for more urgent work (Emergency 10, Low 1). Set to false if
+  # yours counts the other way. Timefold priority "1" is the most important.
+  higherLevelIsMoreImportant: true
+
+# Soft-constraint weights. The full list is in the model's OpenAPI
+# specification: https://app.timefold.ai/openapis/field-service-routing/v1
+constraintWeights:
+  # Travel alone produces lopsided days: one technician takes a tight cluster
+  # of jobs while another drives across town for one. Balance has to outweigh
+  # travel for the board to look like a fair day's work. At 100 the London demo
+  # left one engineer idle and gave another eight hours; 1000 gives everyone a
+  # day's work for about 25 more minutes of driving across the team.
+  balanceTimeUtilizationWeight: 1000
+  # Pick ONE travel objective; Timefold warns (TRAVEL_WEIGHT_CONFLICT) if both
+  # are non-zero. Time is what consumes the working day.
+  minimizeTravelTimeWeight: 30
+  minimizeTravelDistanceWeight: 0
+  minimizeUnnecessarySkillsWeight: 5   # keep specialists for jobs that need them
+  # Resource preferences (Preferred) and the account's preferred resource.
+  preferVisitVehicleMatchPreferredVehiclesWeight: 50
+  # The account's preferred appointment day and time.
+  preferredVisitTimeWindowWeight: 20
+  # Bookable resource hourly rate, sent as each shift's cost. Off by default:
+  # at 1, Timefold kept the most expensive engineer idle all day and drove
+  # 20 minutes more; raise it where labour cost should drive the plan.
+  minimizeShiftCostsWeight: 0
+
+preferences:
+  # Accounts store a preferred appointment time as Morning / Afternoon /
+  # Evening (preferredappointmenttimecode 1 / 2 / 3). These are the hours each
+  # means, local to timeZone. The plug-in runs on Windows, which names the same
+  # zone differently, hence windowsTimeZone.
+  timeZone: Europe/London
+  windowsTimeZone: GMT Standard Time
+  appointmentTimes:
+    1: ["08:00", "12:00"]
+    2: ["12:00", "17:00"]
+    3: ["17:00", "20:00"]
+
+writeBack:
+  # The booking status written for planned visits. It must be one whose Field
+  # Service status is Scheduled. Left empty, the first such status is used.
+  # The UI label is localised ("Scheduled", "Programada", ...), so match on
+  # your environment's language.
+  scheduledStatusName: ""
+  # bookableresourcebooking.msdyn_bookingmethod. 192350000 is "Optimization",
+  # the value Resource Scheduling Optimization writes.
+  bookingMethod: 192350000
+
+# Optional: how Timefold decides to stop, merged into the request's termination.
+# By default it stops once the score stops improving ("diminished returns"), often
+# well before the solver time. To always use the full solver time:
+# termination:
+#   unimprovedSpentLimit: PT1H
