@@ -34,9 +34,12 @@ from __future__ import annotations
 import argparse
 import base64
 import hashlib
+import io
 import json
+import re
 import struct
 import uuid
+import zipfile
 
 import yaml
 
@@ -62,6 +65,128 @@ env = read_env()
 def label(text: str, lang: int) -> dict:
     return {"@odata.type": "Microsoft.Dynamics.CRM.Label", "LocalizedLabels": [
         {"@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel", "Label": text, "LanguageCode": lang}]}
+
+
+ENGLISH = 1033
+# Dataverse writes the system columns, views and form sections of a new table in
+# the environment's base language only. The standard English labels, for an
+# export from a Spanish environment (the trial the zips come from).
+TRANSLATIONS = {
+    "Autor": "Created By", "Autor (delegado)": "Created By (Delegate)",
+    "Modificado por": "Modified By", "Modificado por (delegado)": "Modified By (Delegate)",
+    "Fecha de creación": "Created On", "Fecha de modificación": "Modified On",
+    "Fecha de creación del registro": "Record Created On",
+    "Propietario": "Owner", "Usuario propietario": "Owning User",
+    "Equipo propietario": "Owning Team", "Unidad de negocio propietaria": "Owning Business Unit",
+    "Estado": "Status", "Razón para el estado": "Status Reason",
+    "Activo": "Active", "Inactivo": "Inactive",
+    "Número de secuencia de importación": "Import Sequence Number",
+    "Número de versión de regla de zona horaria": "Time Zone Rule Version Number",
+    "Código de zona horaria de conversión UTC": "UTC Conversion Time Zone Code",
+    "Información": "Information", "Detalles": "Details", "GENERAL": "General",
+    "Encabezado": "Header", "Pie de página": "Footer",
+    "Id. del propietario": "Owner Id",
+    "Solo para uso interno.": "For internal use only.",
+    "Formulario para esta entidad.": "A form for this entity.",
+    "Formulario de tarjeta para esta entidad.": "A card form for this entity.",
+    "Identificador único de instancias de entidad": "Unique identifier for entity instances",
+    "Identificador único del usuario propietario del registro.":
+        "Unique identifier for the user that owns the record.",
+    "Identificador único del equipo propietario del registro.":
+        "Unique identifier for the team that owns the record.",
+    "Identificador único de la unidad de negocio propietaria del registro":
+        "Unique identifier for the business unit that owns the record",
+    "Identificador único del usuario que creó el registro.":
+        "Unique identifier of the user who created the record.",
+    "Identificador único del usuario que modificó el registro.":
+        "Unique identifier of the user who modified the record.",
+    "Identificador único del usuario delegado que creó el registro.":
+        "Unique identifier of the delegate user who created the record.",
+    "Identificador único del usuario delegado que modificó el registro.":
+        "Unique identifier of the delegate user who modified the record.",
+    "Fecha y hora de creación del registro.": "Date and time when the record was created.",
+    "Fecha y hora en que se modificó el registro.": "Date and time when the record was modified.",
+    "Fecha y hora en que se migró el registro.": "Date and time that the record was migrated.",
+    "Número de secuencia de la importación que creó este registro.":
+        "Sequence number of the import that created this record.",
+    "Código de la zona horaria que estaba en uso cuando se creó el registro.":
+        "Time zone code that was in use when the record was created.",
+}
+# The same for labels that carry the table's name.
+TRANSLATION_PATTERNS = [
+    (r"Estado del (.+)", r"Status of the \1"),
+    (r"Razón para el estado del (.+)", r"Reason for the status of the \1"),
+    (r"Mis (.+)", r"My \1"),
+    (r"Entidades (.+) activas de mi propiedad", r"Active \1 owned by me"),
+    (r"Búsqueda rápida de (.+) activos", r"Quick Find Active \1"),
+    (r"(.+) activo", r"Active \1"),
+    (r"(.+) inactivo", r"Inactive \1"),
+    (r"Vista asociada de (.+)", r"\1 Associated View"),
+    (r"Vista de búsqueda avanzada de (.+)", r"\1 Advanced Find View"),
+    (r"Vista de búsqueda de (.+)", r"\1 Lookup View"),
+]
+LABEL = r'<(\w+)\b[^>]*?\blanguagecode="(\d+)"[^>]*/>'
+
+
+def translate(text: str) -> str:
+    if text in TRANSLATIONS:
+        return TRANSLATIONS[text]
+    for pattern, english in TRANSLATION_PATTERNS:
+        if re.fullmatch(pattern, text):
+            return re.sub(pattern, english, text)
+    return text
+
+
+def english_labels(xml: str, base: int, untranslated: set) -> str:
+    """Keep one English label per text. Where only the base language has one,
+    use it as English: our own labels are English text whatever the code."""
+    def group(run):
+        found = {}
+        for m in re.finditer(LABEL, run.group(0)):
+            found.setdefault(m.group(1), {})[int(m.group(2))] = m.group(0)
+        indent = re.match(r"\s*", run.group(0)).group(0)
+        kept = []
+        for by_lang in found.values():
+            tag = by_lang.get(ENGLISH)
+            if tag is None and base in by_lang:
+                tag = by_lang[base].replace(f'languagecode="{base}"', f'languagecode="{ENGLISH}"')
+                old = re.search(r'description="([^"]*)"', tag)
+                if old:
+                    new = translate(old.group(1))
+                    if new == old.group(1) and re.search(r"[áéíóúñ]|\b(de|del|el|la)\b", new):
+                        untranslated.add(new)
+                    tag = tag.replace(old.group(0), f'description="{new}"')
+            if tag:
+                kept.append(tag)
+        return "".join(indent + t for t in kept)
+    xml = re.sub(rf"(?:\s*{LABEL})+", group, xml)
+    xml = re.sub(r"(<Languages>).*?(</Languages>)", rf"\g<1><Language>{ENGLISH}</Language>\g<2>", xml, flags=re.S)
+    return re.sub(r'(<ImportExportXml\b[^>]*\blanguagecode=")\d+"', rf'\g<1>{ENGLISH}"', xml)
+
+
+def english_only(data: bytes, base: int) -> bytes:
+    """Make English the solution's base language, so the zip is not tied to the
+    language of the environment it was exported from."""
+    if base == ENGLISH:
+        return data
+    untranslated = set()
+    out = io.BytesIO()
+    with zipfile.ZipFile(io.BytesIO(data)) as src, zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as dst:
+        for item in src.infolist():
+            body = src.read(item)
+            if item.filename.endswith(".xml"):
+                bom = body.startswith(b"\xef\xbb\xbf")
+                text = english_labels(body.decode("utf-8-sig"), base, untranslated)
+                body = (b"\xef\xbb\xbf" if bom else b"") + text.encode("utf-8")
+            dst.writestr(item, body)
+    for text in sorted(untranslated):
+        print(f"  no English label for: {text}")
+    return out.getvalue()
+
+
+def contains(data: bytes, needle: bytes) -> bool:
+    with zipfile.ZipFile(io.BytesIO(data)) as z:
+        return any(needle in z.read(name) for name in z.namelist())
 
 
 class Deployer:
@@ -431,8 +556,8 @@ class Deployer:
         for managed in (False, True):
             result = self.dv.action("ExportSolution", {"SolutionName": SOLUTION, "Managed": managed})
             name = f"{SOLUTION}_{version.replace('.', '_')}{'_managed' if managed else ''}.zip"
-            data = base64.b64decode(result["ExportSolutionFile"])
-            if env.get("TIMEFOLD_API_KEY") and env["TIMEFOLD_API_KEY"].encode() in data:
+            data = english_only(base64.b64decode(result["ExportSolutionFile"]), self.lang)
+            if env.get("TIMEFOLD_API_KEY") and contains(data, env["TIMEFOLD_API_KEY"].encode()):
                 raise SystemExit("Refusing to write an export that contains the API key.")
             (out / name).write_bytes(data)
             print(f"exported dynamics/solution/{name} ({len(data) // 1024} KB)")
