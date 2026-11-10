@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Compile the Dataverse plug-in. Maintainers only: everyone else imports the
-# exported solution in dynamics/solution/ and needs nothing local.
+# Compile the Dataverse plug-in. scripts/setup.sh runs it; to install without
+# any local tools, import the solution zip in dynamics/solution/ instead.
 #
 # Installs a private .NET SDK into .tools/ (git-ignored) on first run, and
 # fetches the two Dataverse SDK assemblies the plug-in compiles against.

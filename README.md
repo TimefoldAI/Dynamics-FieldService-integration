@@ -52,8 +52,8 @@ because a connection signs in as a person. `setup.sh` prints the link:
    **Connection references** > **Timefold: Dataverse**.
 2. Pick or create a **Microsoft Dataverse** connection (the connector with the
    green icon) and save. The "Premium" label does not matter: the Dynamics 365
-   licence covers it.
-3. Open **Cloud flows** > **Timefold: drive optimisation runs** and turn it off
+   license covers it.
+3. Open **Cloud flows** > **Timefold: drive optimization runs** and turn it off
    and on.
 
 ### Install without the scripts
@@ -68,19 +68,33 @@ because a connection signs in as a person. `setup.sh` prints the link:
 ## Usage
 
 Open **Work Orders** (or **Bookings**) in the Field Service app and press
-**Optimise with Timefold**. Pick the day, the number of days and the solver
-time, and press **Optimise**. The dialog shows the run as it goes: reading
+**Optimize with Timefold**. Pick the day, the number of days and the solver
+time, and press **Optimize**. The dialog shows the run as it goes: reading
 Field Service, solving, writing bookings. When it says *Completed*, press
 **Open schedule board**.
 
 You can close the dialog at any time; the run carries on. Each run is a
-**Timefold optimisation run** record with its stage, score, counts, log and the
-exact request sent to Timefold. Find them in the Timefold optimisation runs
+**Timefold optimization run** record with its stage, score, counts, log and the
+exact request sent to Timefold. Find them in the Timefold optimization runs
 list. *Dry run* builds the request and stores it on the record without
 sending it.
 
 Anything that creates a run record starts a run: the dialog, the Web API, or a
 Power Automate flow (for example a nightly plan for the next day).
+
+### Who can run it
+
+The plug-in runs as SYSTEM, because a run reads calendars and characteristics
+and creates, moves and deletes bookings, which a dispatcher may not be allowed
+to do one by one. So **anyone who can create a Timefold optimization run can
+rebook all open work in the planned territory.**
+
+A user needs **Create** and **Read** on the *Timefold optimization run* table
+(User level is enough), next to the Field Service privileges to open Work Orders
+and the schedule board. The solution adds no security role, so at first only
+System Administrators and System Customizers can start a run. Give these
+privileges to the people who dispatch, in a role of your own, and to nobody
+else.
 
 ## Setup options
 
@@ -93,7 +107,7 @@ Power Automate flow (for example a nightly plan for the next day).
 | `--org URL` | The environment. Default: `DATAVERSE_URL` in `.env` |
 | `--api-key KEY` | The Timefold API key. Default: `TIMEFOLD_API_KEY`, then `.env` |
 | `--yes` | Take the default for each question |
-| `--no-export` | Don't write the solution zips in `dynamics/solution/` |
+| `--export` | Also write the solution zips in `dynamics/solution/`. For maintainers: it replaces the committed zips |
 
 ```bash
 ./scripts/setup.sh --org https://<org>.crm4.dynamics.com --no-seed
@@ -117,6 +131,13 @@ To set the key by hand: in [make.powerapps.com](https://make.powerapps.com),
 open **Solutions** > **Timefold for Field Service** > **Environment
 variables** > **Timefold API key**, and set its **Current value**.
 
+The variable is of type Text, so the key is stored as plain text. Anyone who
+can read environment variable values can read it, and in many environments the
+Basic User role can. If that is too wide, remove Read on *Environment Variable
+Value* from the roles that don't need it. Dataverse also has a *Secret* type,
+backed by Azure Key Vault; this version doesn't read it (see
+[Known limits](#known-limits)).
+
 ## How it works
 
 ```
@@ -136,7 +157,7 @@ variables** > **Timefold API key**, and set its **Current value**.
 | Build the Timefold request, read the plan | `Translate` |
 | Call the Timefold Model API | `TimefoldClient` |
 | Write the plan back as bookings | `WriteBack` |
-| Start, poll and finish a run | `OptimisationRunPlugin`, `ProcessRunApi` |
+| Start, poll and finish a run | `OptimizationRunPlugin`, `ProcessRunApi` |
 
 The plan is written as one `bookableresourcebooking` for each visit: the same
 record the schedule board creates when a dispatcher drags work onto a
@@ -169,7 +190,7 @@ step             tf_ProcessRun: one check on the solver, or one batch of booking
                    solved?          GET the plan, write bookings, close the run
 ```
 
-The flow **Timefold: drive optimisation runs** calls the `tf_ProcessRun`
+The flow **Timefold: drive optimization runs** calls the `tf_ProcessRun`
 custom API every 20 seconds from a run's creation until it ends. Each call is
 a fresh request, so a solve can take up to an hour. The dialog calls it too
 while it is open, and the plug-in hands itself on for the first few minutes.
@@ -188,7 +209,7 @@ finished an hour after its solver time is marked *Failed*.
 | the skills a job needs | `msdyn_requirementcharacteristic` with rating values |
 | the engineers | `bookableresource` with a `msdyn_resourceterritory` in scope |
 | their skills | `bookableresourcecharacteristic` with rating values |
-| their start and end location | `msdyn_startlocation` / `msdyn_endlocation`: their address or organisational unit |
+| their start and end location | `msdyn_startlocation` / `msdyn_endlocation`: their address or organizational unit |
 | their working hours, breaks and time off | the resource calendar, through `ExpandCalendar` |
 | how urgent a job is | `msdyn_priority` Level of Importance |
 | jobs under way | bookings that are Traveling, In Progress or On Break |
@@ -204,17 +225,17 @@ Travel times and distances come from the Timefold Platform maps service.
 | The engineer arrives in one of the bookable slots | time group on the requirement: arrival windows |
 | An engineer needs the skills and levels a job requires | characteristics and rating values |
 | Each territory's work stays with its own engineers | resource territories, sent as a required tag |
-| Roles and organisational units | requirement roles and organisational unit |
+| Roles and organizational units | requirement roles and organizational unit |
 | Preferred, restricted, must choose from | requirement resource preferences |
 | The customer's preferred time, day and engineer | account preferences (soft) |
 | One job after another, optionally by the same engineer | requirement dependencies |
 | Several engineers on one job at the same time | requirement groups |
 | Lunch and other breaks | calendar breaks, as `FIXED` breaks |
 | Travel before and after working hours | resource travel settings |
-| A labour cost per hour | resource hourly rate |
+| A labor cost per hour | resource hourly rate |
 
 Skipped, and listed in the run log: work orders that are Completed, Posted or
-Cancelled, and requirements with no coordinates, no duration, or no window in
+Canceled, and requirements with no coordinates, no duration, or no window in
 the planning period.
 
 ### Work under way
@@ -242,8 +263,9 @@ The routing rules:
 |---|---|---|
 | `routingRules.maxOvertimeMinutes` | `30` | The end of the working day is a soft limit; this is the hard limit after it |
 | `routingRules.restrictToOwnTerritory` | `true` | If `false`, Timefold can give a job to an engineer of another territory |
-| `priority.higherLevelIsMoreImportant` | `true` | The direction of Level of Importance, which Field Service leaves to each organisation |
+| `priority.higherLevelIsMoreImportant` | `true` | The direction of Level of Importance, which Field Service leaves to each organization |
 | `constraintWeights.*` | | Soft-constraint weights; the full list is in the [OpenAPI specification](https://app.timefold.ai/openapis/field-service-routing/v1) |
+| `preferences.windowsTimeZone` | `GMT Standard Time` | The time zone of the planning day (midnight to midnight) and of the appointment times, as a Windows time zone ID such as `Pacific Standard Time` or `AUS Eastern Standard Time`. Without it, UTC |
 | `preferences.appointmentTimes` | Morning 08–12, Afternoon 12–17, Evening 17–20 | What the account's preferred time means |
 | `writeBack.scheduledStatusName` | the first *Scheduled* status | The booking status to write |
 | `termination` | | Optional: how Timefold decides to stop. By default it stops once the score stops improving, often before the solver time |
@@ -253,7 +275,7 @@ The routing rules:
 `scripts/seed_env.py` loads a field service round in London: eight biomedical
 engineers with skills, calendars and home locations, 99 clinics, and 102 work
 orders over three working days. It uses every rule above: time windows,
-promised times, time-group slots, preferences, roles, organisational units,
+promised times, time-group slots, preferences, roles, organizational units,
 dependencies, a two-engineer job, breaks, travel before and after work.
 
 ```bash
@@ -304,12 +326,12 @@ to Map and back leaves it on *Daily*. Set it to *Hourly*.
 
 ```bash
 ./scripts/build_plugin.sh          # compiles the plug-in (installs .NET into .tools/)
-uv run scripts/deploy_solution.py  # creates or updates the solution, exports the zips
+uv run scripts/deploy_solution.py --export  # creates or updates the solution, exports the zips
 ```
 
 `deploy_solution.py` creates everything in the solution (table, form,
 environment variables, plug-in and steps, custom API, flow, dialog and
-buttons), publishes it, and exports `dynamics/solution/`. Bump
+buttons) and publishes it. With `--export` it also writes `dynamics/solution/`. Bump
 `dynamics/VERSION` before exporting a release.
 
 ## Repository layout
@@ -321,9 +343,9 @@ dynamics/
     Translate.cs                build the request, read the plan
     TimefoldClient.cs           calls the Timefold Model API
     WriteBack.cs                write the plan back as bookings
-    OptimisationRunPlugin.cs    start, poll and finish a run; the tf_ProcessRun step
+    OptimizationRunPlugin.cs    start, poll and finish a run; the tf_ProcessRun step
     Json.cs                     JSON without dependencies (the plug-in sandbox)
-  webresources/                 the Optimise with Timefold dialog
+  webresources/                 the Optimize with Timefold dialog
   solution/                     the exported solution, managed and unmanaged
   VERSION
 
@@ -352,6 +374,8 @@ config/
   seconds at a time, so hundreds of bookings take a few minutes after solving.
 - **The flow needs a connection.** Without it, a run only moves while the
   dialog is open.
+- **The API key is a Text environment variable.** A *Secret* environment
+  variable (Azure Key Vault) is not supported yet.
 
 ## Contributing
 

@@ -55,7 +55,7 @@ def main() -> None:
     with DataverseClient(url, TokenProvider(url, tenant, cache_file=str(TOKEN_CACHE))) as dv:
         who = dv.ping()
     write_env({"DATAVERSE_URL": url, "DATAVERSE_TENANT_ID": tenant})
-    print(f"Signed in. User {who['userId']} in organisation {who['organizationId']}.")
+    print(f"Signed in. User {who['userId']} in organization {who['organizationId']}.")
     print("Wrote DATAVERSE_URL and DATAVERSE_TENANT_ID to .env.")
     print("Next: uv run scripts/seed_env.py")
 

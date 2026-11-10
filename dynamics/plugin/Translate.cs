@@ -103,7 +103,8 @@ namespace Timefold.FieldService
                 if (b == null || !names.ContainsKey(b.ResourceId)) continue;
                 var tech = p.Technicians.First(t => t.Id == b.ResourceId);
                 var at = b.Arrival ?? b.Start;
-                var shift = tech.Shifts.FirstOrDefault(s => s.Start.Date == at.Date);
+                var shift = tech.Shifts.FirstOrDefault(s => s.Start <= at && at < s.End)
+                            ?? tech.Shifts.FirstOrDefault(s => s.Start.Date == at.Date);
                 if (shift == null) continue;
                 var sid = ShiftId(names[tech.Id], shift.Start);
                 if (!pinned.ContainsKey(sid)) pinned[sid] = new List<Tuple<DateTime, string>>();
@@ -257,7 +258,7 @@ namespace Timefold.FieldService
             {
                 { "run", new Dictionary<string, object>
                     {
-                        { "name", runName ?? "Dynamics 365 Field Service " + Day(p.WindowStart) },
+                        { "name", runName ?? "Dynamics 365 Field Service " + Day(p.PlanDay) },
                         { "termination", Termination(rules, solverSeconds) }
                     } }
             };

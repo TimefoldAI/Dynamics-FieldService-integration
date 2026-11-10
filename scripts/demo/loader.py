@@ -165,7 +165,7 @@ class Loader:
                         "msdyn_name": f"{a}-{b}",
                         "msdyn_starttime": f"2026-01-05T{a}:00Z", "msdyn_endtime": f"2026-01-05T{b}:00Z",
                         "msdyn_timegroupid@odata.bind": f"/msdyn_timegroups({time_groups[g['name']]})"})
-        self.say(f"  {len(org_units)} organisational units, {len(roles)} roles, "
+        self.say(f"  {len(org_units)} organizational units, {len(roles)} roles, "
                  f"{len(time_groups)} time groups")
 
         # Technicians -------------------------------------------------------

@@ -25,7 +25,7 @@ namespace Timefold.FieldService
         {
             if (string.IsNullOrWhiteSpace(apiKey))
                 throw new InvalidPluginExecutionException(
-                    "No Timefold API key. Get one free at https://app.timefold.ai (Settings > API keys) and put it in " +
+                    "No Timefold API key. Get one at https://app.timefold.ai (Settings > API keys; a free trial includes one) and put it in " +
                     "the 'Timefold API key' environment variable (tf_TimefoldApiKey), or tick Dry run.");
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
             http = new HttpClient { BaseAddress = new Uri(baseUrl.TrimEnd('/')), Timeout = TimeSpan.FromSeconds(45) };

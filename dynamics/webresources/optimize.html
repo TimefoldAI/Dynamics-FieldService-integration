@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Optimise with Timefold</title>
-<!-- Web resource tf_/optimise.html. Starts a run by creating a
-     tf_optimisationrun row; the Timefold plug-in does the rest inside
+<title>Optimize with Timefold</title>
+<!-- Web resource tf_/optimize.html. Starts a run by creating a
+     tf_optimizationrun row; the Timefold plug-in does the rest inside
      Dataverse. This page only watches that row. -->
 <style>
   body{margin:0;padding:16px 20px;font:14px/1.45 "Segoe UI",-apple-system,sans-serif;color:#242424}
@@ -24,7 +24,7 @@
 </style>
 </head>
 <body>
-<h2>Optimise routes with Timefold</h2>
+<h2>Optimize routes with Timefold</h2>
 <p>Plans the day's open work orders across your technicians and books them on the schedule board.</p>
 
 <div id="form">
@@ -34,7 +34,7 @@
     <div><label for="secs">Solver time (s)</label><input type="number" id="secs" min="5" max="3600" value="30"></div>
   </div>
   <label class="check"><input type="checkbox" id="dry"> Dry run: build the request, don't call Timefold</label>
-  <button id="go">Optimise</button><button class="secondary" id="close">Close</button>
+  <button id="go">Optimize</button><button class="secondary" id="close">Close</button>
 </div>
 
 <div id="progress" hidden>
@@ -43,7 +43,7 @@
     <div><b id="open">–</b>left open</div><div><b id="score" style="font-size:13px;font-weight:600;margin-top:6px">–</b>score</div></div>
   <pre id="log">Starting…</pre>
   <p class="note" id="note">You can close this window: the run carries on in Dynamics, and its record
-    under Timefold optimisation runs shows the result.</p>
+    under Timefold optimization runs shows the result.</p>
   <button id="board" disabled>Open schedule board</button><button class="secondary" id="done">Close</button>
 </div>
 
@@ -59,7 +59,9 @@ var STALLED = 180000;       // no change on the run for this long: say so
 function nextWeekday() {
   var d = new Date();
   while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
-  return d.toISOString().slice(0, 10);
+  // The user's local date: toISOString would give the UTC date, a day off near midnight.
+  var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+  return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
 }
 $("day").value = nextWeekday();
 
@@ -80,7 +82,7 @@ $("go").onclick = function () {
     tf_solverseconds: parseInt($("secs").value, 10) || 30,
     tf_dryrun: $("dry").checked
   };
-  Xrm.WebApi.createRecord("tf_optimisationrun", run).then(function (created) {
+  Xrm.WebApi.createRecord("tf_optimizationrun", run).then(function (created) {
     $("form").hidden = true;
     $("progress").hidden = false;
     watch(created.id);
@@ -106,7 +108,7 @@ function step(id) {
 
 var lastChange = { text: null, at: Date.now() }, lastStep = 0;
 function watch(id) {
-  Xrm.WebApi.retrieveRecord("tf_optimisationrun", id,
+  Xrm.WebApi.retrieveRecord("tf_optimizationrun", id,
     "?$select=tf_stage,tf_log,tf_score,tf_visits,tf_scheduled,tf_unscheduled,modifiedon").then(function (r) {
     var stage = r.tf_stage || 100000000;
     $("stage").textContent = STAGES[stage] || stage;
@@ -121,7 +123,7 @@ function watch(id) {
     if (r.modifiedon !== lastChange.text) lastChange = { text: r.modifiedon, at: Date.now() };
     if (Date.now() - lastChange.at > STALLED)
       $("note").textContent = "This run has not moved for " + Math.round((Date.now() - lastChange.at) / 60000) +
-        " minutes. Check that the flow \u201cTimefold: drive optimisation runs\u201d is on in Power Automate.";
+        " minutes. Check that the flow \u201cTimefold: drive optimization runs\u201d is on in Power Automate.";
     if (stage !== 100000000 && Date.now() - lastStep > STEP_EVERY) { lastStep = Date.now(); step(id); }
     setTimeout(function () { watch(id); }, 3000);
   }, function () { setTimeout(function () { watch(id); }, 5000); });

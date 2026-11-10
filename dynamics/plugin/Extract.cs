@@ -23,7 +23,7 @@ namespace Timefold.FieldService
         public List<string> Territories = new List<string>();
         public SortedDictionary<string, int> Skills = new SortedDictionary<string, int>(StringComparer.Ordinal);
         public List<Shift> Shifts = new List<Shift>();
-        public List<string> Tags = new List<string>();            // organisational unit
+        public List<string> Tags = new List<string>();            // organizational unit
         public int TravelBeforeMinutes, TravelAfterMinutes;
         public decimal? HourlyRate;
     }
@@ -74,6 +74,8 @@ namespace Timefold.FieldService
         public Dictionary<Guid, string> Territories = new Dictionary<Guid, string>();
         public Dictionary<Guid, BookingStatus> BookingStatuses = new Dictionary<Guid, BookingStatus>();
         public DateTime WindowStart, WindowEnd;
+        /// <summary>The first day planned, as a date in the planning time zone.</summary>
+        public DateTime PlanDay;
         public List<string> Skipped = new List<string>();
     }
 
@@ -169,6 +171,13 @@ namespace Timefold.FieldService
                 day = day.AddDays(1);
             }
             return result;
+        }
+
+        /// <summary>Midnight of a local date in the zone, as UTC.</summary>
+        public static DateTime ToUtc(DateTime localDate, TimeZoneInfo zone)
+        {
+            return DateTime.SpecifyKind(TimeZoneInfo.ConvertTimeToUtc(
+                DateTime.SpecifyKind(localDate.Date, DateTimeKind.Unspecified), zone), DateTimeKind.Utc);
         }
 
         // ------------------------------------------------------------ scope
@@ -267,12 +276,16 @@ namespace Timefold.FieldService
 
             if (!windowStart.HasValue)
             {
-                var today = DateTime.UtcNow.Date;
-                var starts = requirements.SelectMany(windowsOf).Where(w => w.Item2 >= today).Select(w => w.Item1).OrderBy(d => d).ToList();
-                windowStart = (starts.Count > 0 ? starts[0] : today).Date;
+                var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, zone).Date;
+                var starts = requirements.SelectMany(windowsOf).Where(w => w.Item2 >= ToUtc(today, zone))
+                    .Select(w => w.Item1).OrderBy(d => d).ToList();
+                windowStart = starts.Count > 0 ? TimeZoneInfo.ConvertTimeFromUtc(starts[0], zone).Date : today;
             }
-            p.WindowStart = DateTime.SpecifyKind(windowStart.Value.Date, DateTimeKind.Utc);
-            p.WindowEnd = p.WindowStart.AddDays(days);
+            // The planning day runs from midnight to midnight in the planning time
+            // zone (windowsTimeZone), not in UTC.
+            p.PlanDay = DateTime.SpecifyKind(windowStart.Value.Date, DateTimeKind.Utc);
+            p.WindowStart = ToUtc(p.PlanDay, zone);
+            p.WindowEnd = ToUtc(p.PlanDay.AddDays(days), zone);
 
             Step = "visits";
             // ---- visits
@@ -391,7 +404,7 @@ namespace Timefold.FieldService
                 }
             }
 
-            // ---- roles and organisational units a job needs
+            // ---- roles and organizational units a job needs
             Step = "roles and units";
             var categoryNames = All(svc, "bookableresourcecategory", new[] { "name" })
                 .ToDictionary(r => r.Id, r => r.GetAttributeValue<string>("name"));
@@ -528,7 +541,7 @@ namespace Timefold.FieldService
                 };
                 string techUnit;
                 if (unitNames.TryGetValue(Ref(r, "msdyn_organizationalunit"), out techUnit)) tech.Tags.Add("Org unit: " + techUnit);
-                tech.Shifts = WorkingTime(svc, Ref(r, "calendarid"), p.WindowStart, p.WindowEnd);
+                tech.Shifts = WorkingTime(svc, Ref(r, "calendarid"), p.WindowStart, p.WindowEnd, zone);
                 if (tech.Shifts.Count == 0) p.Skipped.Add(name + ": no working hours in the planning window");
                 technicians[tech.Id] = tech;
             }
@@ -566,13 +579,17 @@ namespace Timefold.FieldService
         /// platform's own flattening of working hours, time off and closures,
         /// which is what the schedule board shows as available time.
         /// </summary>
-        public static List<Shift> WorkingTime(IOrganizationService svc, Guid calendarId, DateTime start, DateTime end)
+        public static List<Shift> WorkingTime(IOrganizationService svc, Guid calendarId, DateTime start, DateTime end,
+                                              TimeZoneInfo zone = null)
         {
             var result = new List<Shift>();
             if (calendarId == Guid.Empty) return result;
             var response = (ExpandCalendarResponse)svc.Execute(
                 new ExpandCalendarRequest { CalendarId = calendarId, Start = start, End = end });
             Func<DateTime?, DateTime> utc = d => DateTime.SpecifyKind(d.Value.ToUniversalTime(), DateTimeKind.Utc);
+            // Blocks belong to the same working day by the local date, not the UTC date.
+            zone = zone ?? TimeZoneInfo.Utc;
+            Func<DateTime, DateTime> localDay = d => TimeZoneInfo.ConvertTimeFromUtc(d, zone).Date;
             var blocks = response.result.Where(b => b.TimeCode == TimeCode.Available)
                 .Select(b => Tuple.Create(utc(b.Start), utc(b.End))).OrderBy(b => b.Item1).ThenBy(b => b.Item2).ToList();
             var breaks = response.result.Where(b => b.TimeCode == TimeCode.Unavailable && b.SubCode == SubCode.Break)
@@ -581,7 +598,7 @@ namespace Timefold.FieldService
             foreach (var b in blocks)
             {
                 var last = merged.LastOrDefault();
-                if (last != null && b.Item1.Date == last[0].Date)
+                if (last != null && localDay(b.Item1) == localDay(last[0]))
                     last[1] = b.Item2 > last[1] ? b.Item2 : last[1];
                 else
                     merged.Add(new[] { b.Item1, b.Item2 });
@@ -592,7 +609,7 @@ namespace Timefold.FieldService
                 var inside = breaks.Where(b => b.Item1 < m[1] && b.Item2 > m[0])
                     .Select(b => Tuple.Create(b.Item1 > m[0] ? b.Item1 : m[0], b.Item2 < m[1] ? b.Item2 : m[1])).ToList();
                 // gaps between the day's own blocks are breaks too
-                var day = blocks.Where(b => b.Item1.Date == m[0].Date).ToList();
+                var day = blocks.Where(b => localDay(b.Item1) == localDay(m[0])).ToList();
                 for (var i = 0; i + 1 < day.Count; i++)
                     if (day[i + 1].Item1 > day[i].Item2 && !inside.Any(x => x.Item1 <= day[i].Item2 && x.Item2 >= day[i + 1].Item1))
                         inside.Add(Tuple.Create(day[i].Item2, day[i + 1].Item1));

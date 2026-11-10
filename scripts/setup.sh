@@ -16,7 +16,7 @@
 #   --api-key KEY      the Timefold API key (default: TIMEFOLD_API_KEY, then .env)
 #   --seed, --no-seed  load the demo data, or don't (default: ask; no without a terminal)
 #   --yes              take the default for each question
-#   --no-export        don't write the solution zips in dynamics/solution/
+#   --export           also write the solution zips in dynamics/solution/ (maintainers)
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
@@ -29,7 +29,7 @@ while [ $# -gt 0 ]; do
     --seed) seed=yes; shift ;;
     --no-seed) seed=no; shift ;;
     --yes|-y) yes=true; shift ;;
-    --no-export) export_flag="--no-export"; shift ;;
+    --export) export_flag="--export"; shift ;;
     -h|--help) sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown option: $1 (see --help)" >&2; exit 2 ;;
   esac
@@ -74,5 +74,5 @@ fi
 if [ "$seed" = yes ]; then uv run -q scripts/seed_env.py; else echo "Skipped (scripts/seed_env.py loads it later)"; fi
 
 step "6. Done"
-echo "Open Work Orders and press Optimise with Timefold:"
+echo "Open Work Orders and press Optimize with Timefold:"
 echo "  $org/main.aspx?appname=msdyn_FieldService&pagetype=entitylist&etn=msdyn_workorder"

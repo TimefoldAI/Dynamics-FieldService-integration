@@ -14,7 +14,7 @@ Retry policy:
   * A dropped or timed-out response is retried only for methods that are safe
     to repeat: GET, HEAD, DELETE. A POST or PATCH may already have been
     applied, so it is surfaced rather than silently duplicated.
-  * 429 and the 502/503/504 family are retried, honouring Retry-After.
+  * 429 and the 502/503/504 family are retried, honoring Retry-After.
 """
 from __future__ import annotations
 

@@ -101,7 +101,7 @@ class DataverseClient:
         return headers
 
     # Errors Dataverse reports when the database is momentarily busy: a deadlock,
-    # or the session dropped while a customisation is being published. Microsoft
+    # or the session dropped while a customization is being published. Microsoft
     # documents both as transient; the request had no effect and can be repeated.
     TRANSIENT = ("deadlock", "database session was disconnected", "please try again",
                  "sql number: 1205", "there is no active transaction")

@@ -6,8 +6,8 @@
 """Build the Timefold solution in a Dynamics 365 environment, then export it.
 
     ./scripts/build_plugin.sh                 # compile the plug-in first
-    uv run scripts/deploy_solution.py         # create or update, then export
-    uv run scripts/deploy_solution.py --no-export
+    uv run scripts/deploy_solution.py         # create or update
+    uv run scripts/deploy_solution.py --export  # and write the solution zips (maintainers)
 
 scripts/setup.sh runs it for you. Without a terminal, import the exported file,
 dynamics/solution/TimefoldFieldService_<version>.zip, through Power Apps
@@ -15,15 +15,15 @@ dynamics/solution/TimefoldFieldService_<version>.zip, through Power Apps
 
 It creates, inside the solution TimefoldFieldService (publisher prefix tf):
 
-  * the table tf_optimisationrun ("Timefold optimisation run"), its view and form
+  * the table tf_optimizationrun ("Timefold optimization run"), its view and form
   * environment variables tf_TimefoldApiKey, tf_TimefoldBaseUrl,
     tf_RootTerritory, tf_SolverSeconds, tf_RoutingRules
   * the plug-in assembly Timefold.FieldService and two asynchronous steps
   * the custom API tf_ProcessRun: one step of a run
-  * the flow "Timefold: drive optimisation runs" and its connection reference
-  * web resources tf_/optimise.js and tf_/optimise.html
-  * the "Optimise with Timefold" button on the Work Orders, Bookings and
-    optimisation runs lists of the Field Service app
+  * the flow "Timefold: drive optimization runs" and its connection reference
+  * web resources tf_/optimize.js and tf_/optimize.html
+  * the "Optimize with Timefold" button on the Work Orders, Bookings and
+    optimization runs lists of the Field Service app
 
 If TIMEFOLD_API_KEY is set in .env, it is stored as the environment
 variable's current value. That value is not part of the solution and is never
@@ -47,13 +47,13 @@ from _common import ROOT, read_env, real_client
 
 SOLUTION = "TimefoldFieldService"
 PUBLISHER = "timefold"
-TABLE = "tf_optimisationrun"
+TABLE = "tf_optimizationrun"
 PLUGIN_DLL = ROOT / "dynamics/plugin/bin/Release/net462/Timefold.FieldService.dll"
 SNK = ROOT / "dynamics/plugin/Timefold.FieldService.snk"
-PLUGIN_TYPE = "Timefold.FieldService.OptimisationRunPlugin"
+PLUGIN_TYPE = "Timefold.FieldService.OptimizationRunPlugin"
 STEP_API_TYPE = "Timefold.FieldService.ProcessRunApi"
 STEP_API = "tf_ProcessRun"
-FLOW = "Timefold: drive optimisation runs"
+FLOW = "Timefold: drive optimization runs"
 DATAVERSE_API = "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
 CONNECTION_REF = "tf_dataverse"
 STAGES = [(100000000, "Queued"), (100000001, "Solving"), (100000002, "Writing bookings"),
@@ -224,7 +224,7 @@ class Deployer:
         self.upsert("solutions", "solutionid", f"uniquename eq '{SOLUTION}'", {
             "uniquename": SOLUTION, "friendlyname": "Timefold for Field Service",
             "version": version,
-            "description": "Optimises Dynamics 365 Field Service routes with Timefold Field Service "
+            "description": "Optimizes Dynamics 365 Field Service routes with Timefold Field Service "
                            "Routing, entirely inside Dataverse. https://timefold.ai",
             "publisherid@odata.bind": f"/publishers({pub})"}, solution=False)
         print(f"solution {SOLUTION} {version}")
@@ -238,9 +238,9 @@ class Deployer:
         if not exists:
             self.post("EntityDefinitions", {
                 "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata",
-                "SchemaName": TABLE, "DisplayName": L("Timefold optimisation run"),
-                "DisplayCollectionName": L("Timefold optimisation runs"),
-                "Description": L("One route optimisation by Timefold. Creating a row starts it."),
+                "SchemaName": TABLE, "DisplayName": L("Timefold optimization run"),
+                "DisplayCollectionName": L("Timefold optimization runs"),
+                "Description": L("One route optimization by Timefold. Creating a row starts it."),
                 "OwnershipType": "UserOwned", "IsActivity": False, "HasActivities": False,
                 "HasNotes": False, "PrimaryNameAttribute": "tf_name",
                 "Attributes": [{
@@ -291,12 +291,12 @@ class Deployer:
         for view in self.dv.get("savedqueries", select=["savedqueryid", "querytype", "name"],
                                 filter=f"returnedtypecode eq '{TABLE}' and (querytype eq 0 or querytype eq 64)"):
             layout = ('<grid name="resultset" object="1" jump="tf_name" select="1" icon="1" preview="1">'
-                      '<row name="result" id="tf_optimisationrunid">'
+                      '<row name="result" id="tf_optimizationrunid">'
                       + "".join(f'<cell name="{c}" width="{220 if c == "tf_name" else 120}" />' for c in cols)
                       + "</row></grid>")
             fetch = (f'<fetch version="1.0" mapping="logical"><entity name="{TABLE}">'
                      + "".join(f'<attribute name="{c}" />' for c in cols)
-                     + '<attribute name="tf_optimisationrunid" /><order attribute="createdon" descending="true" />'
+                     + '<attribute name="tf_optimizationrunid" /><order attribute="createdon" descending="true" />'
                      '<filter type="and"><condition attribute="statecode" operator="eq" value="0" /></filter>'
                      "</entity></fetch>")
             self.dv._send("PATCH", f"savedqueries({view['savedqueryid']})", "PATCH view",
@@ -379,11 +379,11 @@ class Deployer:
             "publickeytoken": token,
             "description": "Timefold Field Service Routing for Dynamics 365 Field Service."})
         plugin_type = self.upsert("plugintypes", "plugintypeid", f"typename eq '{PLUGIN_TYPE}'", {
-            "typename": PLUGIN_TYPE, "name": PLUGIN_TYPE, "friendlyname": "Timefold optimisation run",
+            "typename": PLUGIN_TYPE, "name": PLUGIN_TYPE, "friendlyname": "Timefold optimization run",
             "pluginassemblyid@odata.bind": f"/pluginassemblies({assembly})"})
         for message, step_name, filtering in [
-                ("Create", "Timefold: start an optimisation run", None),
-                ("Update", "Timefold: continue an optimisation run", "tf_checks")]:
+                ("Create", "Timefold: start an optimization run", None),
+                ("Update", "Timefold: continue an optimization run", "tf_checks")]:
             msg = self.first("sdkmessages", "sdkmessageid", f"name eq '{message}'")["sdkmessageid"]
             flt = self.first("sdkmessagefilters", "sdkmessagefilterid",
                              f"_sdkmessageid_value eq {msg} and primaryobjecttypecode eq '{TABLE}'")
@@ -409,15 +409,15 @@ class Deployer:
             api = found["customapiid"]
         else:   # a custom API's shape cannot change after creation, so it is only created
             api = self.post("customapis", {
-                "uniquename": STEP_API, "name": STEP_API, "displayname": "Timefold: process an optimisation run",
-                "description": "Advances a Timefold optimisation run by one step: checks on the solver or "
+                "uniquename": STEP_API, "name": STEP_API, "displayname": "Timefold: process an optimization run",
+                "description": "Advances a Timefold optimization run by one step: checks on the solver or "
                                "writes a batch of bookings. Called by the driver flow and the dialog.",
                 "bindingtype": 0, "isfunction": False, "isprivate": False,
                 "allowedcustomprocessingsteptype": 0,
                 "PluginTypeId@odata.bind": f"/plugintypes({api_type})"})
             self.post("customapirequestparameters", {
                 "uniquename": "RunId", "name": "RunId", "displayname": "Run",
-                "description": "The tf_optimisationrun to advance.", "type": 12, "isoptional": False,
+                "description": "The tf_optimizationrun to advance.", "type": 12, "isoptional": False,
                 "CustomAPIId@odata.bind": f"/customapis({api})"})
             for name, kind, text in [("Stage", 7, "The run's stage after the step (tf_stage value)."),
                                      ("Busy", 0, "True when another caller was already working on the run.")]:
@@ -464,7 +464,7 @@ class Deployer:
                             "type": "OpenApiConnection", "runAfter": {"Wait": ["Succeeded"]},
                             "inputs": {"host": {**host, "operationId": "PerformUnboundAction"},
                                        "parameters": {"actionName": STEP_API,
-                                                      "item/RunId": "@triggerOutputs()?['body/tf_optimisationrunid']"},
+                                                      "item/RunId": "@triggerOutputs()?['body/tf_optimizationrunid']"},
                                        "authentication": "@parameters('$authentication')"}},
                         # A failed call (a timeout, a hiccup) just means: try again next round.
                         "Remember_the_stage": {
@@ -482,7 +482,7 @@ class Deployer:
             "definition": definition}, "schemaVersion": "1.0.0.0"}
         flow = self.upsert("workflows", "workflowid", f"name eq '{FLOW}' and category eq 5", {
             "name": FLOW, "category": 5, "type": 1, "primaryentity": "none",
-            "description": "Advances Timefold optimisation runs past Dataverse's two-minute plug-in limit.",
+            "description": "Advances Timefold optimization runs past Dataverse's two-minute plug-in limit.",
             "clientdata": json.dumps(clientdata)})
         on = self.first("workflows", "workflowid", f"workflowid eq {flow}", select=["statecode"])
         if not (on and on.get("statecode") == 1):
@@ -508,8 +508,8 @@ class Deployer:
     # ------------------------------------------------- web resources, button
     def webresources(self):
         ids = {}
-        for name, kind, display in [("tf_/optimise.js", 3, "Timefold: open the optimise dialog"),
-                                    ("tf_/optimise.html", 1, "Timefold: optimise dialog")]:
+        for name, kind, display in [("tf_/optimize.js", 3, "Timefold: open the optimize dialog"),
+                                    ("tf_/optimize.html", 1, "Timefold: optimize dialog")]:
             content = (ROOT / "dynamics/webresources" / name.split("/")[-1]).read_bytes()
             ids[name] = self.upsert("webresourceset", "webresourceid", f"name eq '{name}'", {
                 "name": name, "displayname": display, "webresourcetype": kind,
@@ -519,10 +519,10 @@ class Deployer:
 
     def buttons(self, js_id):
         app = self.first("appmodules", "appmoduleid", "uniquename eq 'msdyn_FieldService'")["appmoduleid"]
-        common = {"buttonlabeltext": "Optimise with Timefold",
-                  "buttontooltiptitle": "Optimise with Timefold",
+        common = {"buttonlabeltext": "Optimize with Timefold",
+                  "buttontooltiptitle": "Optimize with Timefold",
                   "buttontooltipdescription": "Plan the day's open work orders across your technicians.",
-                  "onclickeventtype": 2, "onclickeventjavascriptfunctionname": "Timefold.openOptimiseDialog",
+                  "onclickeventtype": 2, "onclickeventjavascriptfunctionname": "Timefold.openOptimizeDialog",
                   "fonticon": "$clientsvg:Calendar", "hidden": False, "type": 0, "sequence": 5,
                   "AppModuleId@odata.bind": f"/appmodules({app})",
                   "OnClickEventJavaScriptWebResourceId@odata.bind": f"/webresourceset({js_id})"}
@@ -530,7 +530,7 @@ class Deployer:
         # lists, so the button sits on the lists a dispatcher works from.
         placed = []
         for table in ("msdyn_workorder", "bookableresourcebooking", TABLE):
-            unique = f"tf_OptimiseWithTimefold_{table}"
+            unique = f"tf_OptimizeWithTimefold_{table}"
             meta = self.dv.function(f"EntityDefinitions(LogicalName='{table}')?$select=MetadataId")["MetadataId"]
             record = {**common, "name": unique, "uniquename": unique, "location": 1,   # list
                       "context": 1, "contextvalue": table,
@@ -565,7 +565,8 @@ class Deployer:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("--no-export", action="store_true")
+    parser.add_argument("--export", action="store_true",
+                        help="write the solution zips in dynamics/solution/ (maintainers)")
     args = parser.parse_args()
     with real_client() as dv:
         dv._client.timeout = 300
@@ -577,9 +578,9 @@ def main():
         d.plugin()
         d.flow()
         webresources = d.webresources()
-        app = d.buttons(webresources["tf_/optimise.js"])
+        app = d.buttons(webresources["tf_/optimize.js"])
         d.publish(app, webresources)
-        if not args.no_export:
+        if args.export:
             d.export(version)
 
 

@@ -19,7 +19,7 @@ routingRules:
 
 priority:
   # Field Service leaves the direction of msdyn_priority's Level of Importance
-  # to each organisation. The Field Service sample data, and this demo, use a
+  # to each organization. The Field Service sample data, and this demo, use a
   # higher number for more urgent work (Emergency 10, Low 1). Set to false if
   # yours counts the other way. Timefold priority "1" is the most important.
   higherLevelIsMoreImportant: true
@@ -44,14 +44,16 @@ constraintWeights:
   preferredVisitTimeWindowWeight: 20
   # Bookable resource hourly rate, sent as each shift's cost. Off by default:
   # at 1, Timefold kept the most expensive engineer idle all day and drove
-  # 20 minutes more; raise it where labour cost should drive the plan.
+  # 20 minutes more; raise it where labor cost should drive the plan.
   minimizeShiftCostsWeight: 0
 
 preferences:
+  # The planning time zone. A planned day runs from midnight to midnight
+  # here, and the appointment times below are local to it. The plug-in runs on
+  # Windows, which names zones differently, hence windowsTimeZone (for example
+  # "Pacific Standard Time", "AUS Eastern Standard Time"). Without it, UTC.
   # Accounts store a preferred appointment time as Morning / Afternoon /
-  # Evening (preferredappointmenttimecode 1 / 2 / 3). These are the hours each
-  # means, local to timeZone. The plug-in runs on Windows, which names the same
-  # zone differently, hence windowsTimeZone.
+  # Evening (preferredappointmenttimecode 1 / 2 / 3); these are the hours each means.
   timeZone: Europe/London
   windowsTimeZone: GMT Standard Time
   appointmentTimes:
@@ -62,7 +64,7 @@ preferences:
 writeBack:
   # The booking status written for planned visits. It must be one whose Field
   # Service status is Scheduled. Left empty, the first such status is used.
-  # The UI label is localised ("Scheduled", "Programada", ...), so match on
+  # The UI label is localized ("Scheduled", "Programada", ...), so match on
   # your environment's language.
   scheduledStatusName: ""
   # bookableresourcebooking.msdyn_bookingmethod. 192350000 is "Optimization",

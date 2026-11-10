@@ -3,7 +3,7 @@
 Thank you for the interest. We are not accepting code contributions to this repository at this
 time.
 
-Only collaborators can open pull requests, so pull requests from forks are not possible.
+We close pull requests from outside the Timefold team without merging them.
 This is not about the quality of the work. This integration describes how Dynamics 365 Field
 Service data maps to the Timefold models, so we keep authorship of it with the team that builds
 those models.

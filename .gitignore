@@ -10,17 +10,6 @@ obj/
 __pycache__/
 *.pyc
 
-# Local tooling, not part of the integration: tests, the mock Dataverse, the
-# local board, the marketing video, and the Python reference code they use.
-local/
-mock-dataverse/
-ui/
-video/
-docker-compose.yml
-scripts/tfd365/api.py
-scripts/tfd365/config.py
-scripts/tfd365/timefold.py
-scripts/tfd365/fsr/
 # Claude Code's local settings for this checkout.
 .claude/
 

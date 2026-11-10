@@ -304,7 +304,7 @@ w["resourcePreferences"] = [{"type": "mustChooseFrom", "technician": n} for n in
 for w in picks[11:13]:
     if any(SENIOR in by_name[n]["roles"] for n in qualified(w)):
         w["roles"] = [SENIOR]
-# An organisational unit: 1 job must be done by the depot's own engineers.
+# An organizational unit: 1 job must be done by the depot's own engineers.
 w = picks[13]
 w["orgUnits"] = [next(u["name"] for u in ORG_UNITS
                       if u["region"] == ("NORTH" if w["territory"] == "London North" else "SOUTH"))]

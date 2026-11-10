@@ -12,6 +12,9 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <Deterministic>true</Deterministic>
+    <!-- No debug symbols and no local paths in the published assembly. -->
+    <DebugType>none</DebugType>
+    <PathMap>$(MSBuildProjectDirectory)=/src</PathMap>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />

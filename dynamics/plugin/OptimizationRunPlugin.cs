@@ -10,9 +10,9 @@ using Microsoft.Xrm.Sdk.Query;
 namespace Timefold.FieldService
 {
     /// <summary>
-    /// Runs a Timefold optimisation entirely inside Dynamics 365.
+    /// Runs a Timefold optimization entirely inside Dynamics 365.
     ///
-    /// Creating a "Timefold optimisation run" row (tf_optimisationrun) starts
+    /// Creating a "Timefold optimization run" row (tf_optimizationrun) starts
     /// it: this plug-in, registered asynchronously on Create, reads Field
     /// Service, sends the request to Timefold, waits for the solver and writes
     /// the plan back as bookings.
@@ -20,7 +20,7 @@ namespace Timefold.FieldService
     /// Dataverse stops any plug-in after two minutes, and stops a chain of
     /// plug-ins that trigger each other at depth 8. A run that needs longer is
     /// advanced in steps, each a fresh call of the tf_ProcessRun custom API
-    /// (ProcessRunApi below): the "Timefold: drive optimisation runs" flow calls
+    /// (ProcessRunApi below): the "Timefold: drive optimization runs" flow calls
     /// it every 20 seconds until the run ends, and the progress dialog calls it
     /// too while it is open. For short runs the plug-in also hands itself on
     /// (it bumps tf_checks; the same plug-in, registered asynchronously on
@@ -29,9 +29,9 @@ namespace Timefold.FieldService
     /// a run at a time. Each step is written to the row, so the progress
     /// dialog and the run's form show exactly where it is.
     /// </summary>
-    public class OptimisationRunPlugin : IPlugin
+    public class OptimizationRunPlugin : IPlugin
     {
-        public const string Table = "tf_optimisationrun";
+        public const string Table = "tf_optimizationrun";
         public const int Queued = 100000000, Solving = 100000001, Writing = 100000002,
                          Completed = 100000003, FailedStage = 100000004, DryRunDone = 100000005;
         private const int PollBudgetSeconds = 70;       // leaves time to write back inside 2 minutes
@@ -40,6 +40,7 @@ namespace Timefold.FieldService
         private const int LockSeconds = 150;            // a step that died lets go after this
         private const int MaxChainDepth = 6;            // Dataverse stops plug-in chains at depth 8
         private const int GraceSeconds = 3600;          // past the solver time, give up after this
+        private const int StartSeconds = 900;           // a run still Queued after this never started
 
         public void Execute(IServiceProvider serviceProvider)
         {
@@ -69,11 +70,17 @@ namespace Timefold.FieldService
             var run = new Run(svc, trace, id, chain);
             busy = false;
             if (run.Final) return run.Stage;
-            if (start != (run.Stage == Queued)) return run.Stage;     // not this caller's step
+            // A step caller (start false) also ends a run that never started, so the flow stops.
+            var neverStarted = !start && run.Stage == Queued && run.Age > StartSeconds;
+            if (start != (run.Stage == Queued) && !neverStarted) return run.Stage;     // not this caller's step
             if (!run.Claim()) { busy = true; return run.Stage; }
             try
             {
-                if (run.Stage == Queued) run.Begin();
+                if (run.SettingsError != null) run.Fail(run.SettingsError);
+                else if (neverStarted)
+                    run.Fail("The run did not start within " + StartSeconds / 60 + " minutes. Check that the " +
+                             "plug-in step on Create of " + Table + " is enabled, then start a new run.");
+                else if (run.Stage == Queued) run.Begin();
                 else if (run.Overdue)
                     run.Fail("Timefold took more than an hour longer than the solver time. Try again, or lower the solver time.");
                 else if (run.Stage == Writing) run.Finish();
@@ -118,13 +125,25 @@ namespace Timefold.FieldService
             public int Checks { get { return row.GetAttributeValue<int?>("tf_checks") ?? 0; } }
             public bool Final { get { return Stage == Completed || Stage == FailedStage || Stage == DryRunDone; } }
 
-            public bool Overdue
+            /// <summary>Set when the environment variables could not be read; the run fails with it.</summary>
+            public readonly string SettingsError;
+
+            /// <summary>Seconds since the run was created.</summary>
+            public double Age
             {
                 get
                 {
                     var created = row.GetAttributeValue<DateTime?>("createdon") ?? DateTime.UtcNow;
-                    var seconds = row.GetAttributeValue<int?>("tf_solverseconds") ?? settings.SolverSeconds;
-                    return DateTime.UtcNow > created.ToUniversalTime().AddSeconds(seconds + GraceSeconds);
+                    return (DateTime.UtcNow - created.ToUniversalTime()).TotalSeconds;
+                }
+            }
+
+            public bool Overdue
+            {
+                get
+                {
+                    var seconds = row.GetAttributeValue<int?>("tf_solverseconds") ?? settings?.SolverSeconds ?? 0;
+                    return Age > seconds + GraceSeconds;
                 }
             }
 
@@ -137,7 +156,13 @@ namespace Timefold.FieldService
                     "tf_dryrun", "tf_stage", "tf_timefoldjobid", "tf_checks", "tf_log", "tf_score",
                     "tf_lockeduntil", "createdon"));
                 log = row.GetAttributeValue<string>("tf_log") ?? "";
-                settings = Settings.Read(svc);
+                try { settings = Settings.Read(svc); }
+                catch (Exception e)
+                {
+                    // For example invalid JSON in tf_RoutingRules: say so on the run, don't leave it Queued.
+                    trace.Trace(e.ToString());
+                    SettingsError = "Could not read the Timefold environment variables: " + e.Message;
+                }
             }
 
             /// <summary>Take the run for this step, unless someone else has it.</summary>
@@ -206,7 +231,7 @@ namespace Timefold.FieldService
                 foreach (var s in problem.Skipped) Say("Skipped " + s);
                 Say(string.Format(CultureInfo.InvariantCulture,
                     "Planning {0:yyyy-MM-dd}: {1} work orders, {2} technicians, {3} already under way",
-                    problem.WindowStart, problem.Visits.Count, problem.Technicians.Count,
+                    problem.PlanDay, problem.Visits.Count, problem.Technicians.Count,
                     problem.Visits.Count(v => v.PinnedBooking != null)));
                 if (problem.Visits.Count == 0) { Fail("Nothing to plan: no open work orders on that day."); return; }
 
@@ -345,7 +370,7 @@ namespace Timefold.FieldService
 
     /// <summary>
     /// The tf_ProcessRun custom API: one step of a run, called by the
-    /// "Timefold: drive optimisation runs" flow and by the progress dialog.
+    /// "Timefold: drive optimization runs" flow and by the progress dialog.
     /// Each call is a fresh request, so a run can take as long as Timefold
     /// needs. In: RunId. Out: Stage (the tf_stage value after the step), Busy.
     /// </summary>
@@ -359,7 +384,7 @@ namespace Timefold.FieldService
             var svc = factory.CreateOrganizationService(null);
             var id = (Guid)context.InputParameters["RunId"];
             bool busy;
-            var stage = OptimisationRunPlugin.Advance(svc, trace, id, false, false, out busy);
+            var stage = OptimizationRunPlugin.Advance(svc, trace, id, false, false, out busy);
             context.OutputParameters["Stage"] = stage;
             context.OutputParameters["Busy"] = busy;
         }

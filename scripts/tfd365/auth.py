@@ -66,7 +66,7 @@ class TokenProvider:
             if self.mode == "user-sign-in":
                 return self._from_cache()
         raise AuthError(
-            "No Dataverse credentials. Run `python3 scripts/login.py` to sign in, "
+            "No Dataverse credentials. Run `uv run scripts/login.py` to sign in, "
             "or set DATAVERSE_CLIENT_ID and DATAVERSE_CLIENT_SECRET for an app "
             "registration.")
 
@@ -100,7 +100,7 @@ class TokenProvider:
         if not result or "access_token" not in result:
             raise AuthError(
                 "The cached sign-in has expired or belongs to another environment. "
-                "Run `python3 scripts/login.py` again.")
+                "Run `uv run scripts/login.py` again.")
         if self._cache.has_state_changed:
             try:
                 with open(self.cache_file, "w") as f:
